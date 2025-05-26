@@ -1,0 +1,100 @@
+<body>
+  <nav class="navbar navbar-light bg-none">
+    <div class="container-fluid">
+      <div class="leftsides">
+        <a class="navbar-brand" style="font-weight: bolder">ProjectX</a>
+      </div>
+      <div>
+        <input
+          style="display: none"
+          class="form-control me-2 search-input"
+          type="search"
+          placeholder="Search"
+        />
+      </div>
+      <div class="rightsides">
+        <a href="/" class="navbar-brand">Home</a>
+        <a href="/newvideo" class="navbar-brand"><i class="fa-solid fa-file-video"></i></a>
+        <!-- <a href="/about" class="navbar-brand">About</a> -->
+
+        <%if(!currUser){%>
+        <a href="/signup" class="navbar-brand">Register</a>
+
+        <%} else{%>
+        <a class="navbar-brand userIcon" onclick="profile()">
+          <i class="fa-solid fa-user"></i>
+        </a>
+
+        <% }%>
+
+        <main class="main-userIcon" style="display: none">
+          <span>
+            <i class="fa-solid fa-xmark fa-xmarkfruserIcon"></i>
+          </span>
+          <div class="userInfo">
+            <div class="uploader">
+              <div class="uploader-info">
+                <img
+                  src="https://as1.ftcdn.net/v2/jpg/05/16/27/58/1000_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
+                  alt="anonymous.jpg"
+                />
+                <h2><strong>Anonymous01</strong></h2>
+                <div class="datauser">
+                  <div><h4>like:</h4></div>
+                  <div><h4>Subscriber:</h4></div>
+                  <div><h4>playlist:</h4></div>
+                  <div><h4>content:</h4></div>
+                </div>
+                <div class="logout">
+                  <h4><a href="/logout" class="navbar-brand">LOGOUT</a></h4>
+                </div>
+              </div>
+
+              <!-- //add other -->
+            </div>
+          </div>
+        </main>
+        <button class="btn-search" type="submit">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+      <!-- mobile header below -->
+      <div class="rightsidesMOB" style="display: none">
+        <i class="fa-solid fa-bars"> </i>
+        
+      </div>
+    </div>
+  </nav>
+  <main class="main-sideBar" style="display: none">
+    <span>
+      <i class="fa-solid fa-xmark fa-xmarkfrsidebar"></i>
+    </span>
+  <div class="userInfo">
+            <div class="uploader">
+              <div class="uploader-info">
+                <img
+                  src="https://as1.ftcdn.net/v2/jpg/05/16/27/58/1000_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
+                  alt="anonymous.jpg"
+                />
+                <h2><strong>Anonymous01</strong></h2>
+                <div class="datauser">
+                  <div><h4>like:</h4></div>
+                  <div><h4>Subscriber:</h4></div>
+                  <div><h4>playlist:</h4></div>
+                  <div><h4>content:</h4></div>
+                <div class="logout">
+                  <h4><a href="/logout" class="navbar-brand">LOGOUT</a></h4>
+                </div>
+                </div>
+
+              </div>
+  </main>
+</body>
+
+<script>
+  const profile = async () => {
+    const userIcon = document.querySelector(".main-userIcon");
+    userIcon.style.display =
+      userIcon.style.display === "none" ? "block" : "none";
+  };
+</script>

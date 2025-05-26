@@ -1,0 +1,83 @@
+<%layout("../layout/plate.ejs")%>
+<body>
+  <style>
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    a {
+      text-decoration: none;
+    }
+    .card {
+      color: #666;
+      background-color: #333;
+      width: 400px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(130, 119, 119, 0.1);
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .thumbnail img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .video-player video {
+      display: none;
+      width: 400px;
+      height: 400px;
+      aspect-ratio: 1/1;
+      /* display: block; */
+      margin-top: 5px;
+    }
+
+    .card-info {
+      padding: 15px;
+    }
+
+    .card-info h3 {
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .card-info p {
+      font-size: 0.95rem;
+      color: #666;
+    }
+  </style>
+  <div class="container">
+    <% for ( data of data) { %>
+    <div class="card">
+      <a href="/video/<%=data._id%>/show">
+        <div class="thumbnail">
+          <img
+            src="<%= data.video.thumbnailUrl %>"
+            alt="<%= data.video.filename %>"
+          />
+        </div>
+        <div class="video-player">
+          <video controls>
+            <source src="<%= data.video.url %>" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <div class="card-info">
+          <p><%=data.title%></p>
+          <p><%= data.description %></p>
+        </div>
+      </a>
+    </div>
+
+    <% } %>
+  </div>
+</body>

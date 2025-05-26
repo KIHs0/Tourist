@@ -1,0 +1,135 @@
+<%layout("../layout/plate.ejs")%>
+<style>
+  .vidContainer {
+    /* border: 2px solid white; */
+    width: 100vw;
+    min-height: 100vh;
+    margin: 0 auto;
+    position: relative;
+  }
+  .videoContent {
+    /* border: 2px solid red; */
+    inset: 0;
+    position: relative;
+    margin: 2rem auto;
+    width: 75vw;
+    height: 65vh;
+    left: 0;
+  }
+  .videoContent video {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 9px;
+  }
+  .videoInfo {
+    position: absolute;
+    /* border: 2px solid green; */
+    height: 100%;
+    width: 100%;
+    top: 100%;
+    margin-top: 1rem;
+    padding: 1rem;
+    white-space: nowrap;
+    color: rgba(255, 255, 255, 0.712);
+    object-fit: cover;
+    border-radius: 9px;
+  }
+  .videoInfo .tag {
+    text-transform: capitalize;
+    display: flex;
+    position: absolute;
+    right: 0;
+    top: 0;
+    gap: 0.3rem;
+    padding-inline: 3rem;
+  }
+  .videoInfo .tag h1 {
+    font-size: 1.3rem;
+    border: 2px solid gray;
+    padding: 0.7em;
+    border-radius: 50px;
+  }
+
+  .videoInfo .uploader {
+    position: absolute;
+    width: 100%;
+    height: 10vh;
+    white-space: nowrap;
+    /* border: 2px solid red; */
+  }
+
+  .videoInfo .uploader .uploader-info {
+    position: absolute;
+    width: 100%;
+    white-space: nowrap;
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    text-align: center;
+    align-items: center;
+    justify-self: center;
+  }
+
+  .videoInfo .uploader .uploader-info img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 768px) {
+    .videoInfo {
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      padding: 0;
+      margin: 0.5rem;
+    }
+    .videoInfo span h3 {
+      font-size: 0.7rem;
+      white-space: wrap;
+      font-weight: 10;
+    }
+    .videoInfo .tag {
+      position: relative;
+      left: -3rem;
+    }
+    .videoInfo .tag h1 {
+      padding: 0.4em;
+      font-family: Impact;
+      font-size: 0.7rem;
+    }
+
+    .videoInfo .uploader-info h2 {
+      font-size: 0.6rem;
+    }
+  }
+</style>
+<body>
+  <div class="vidContainer">
+    <div class="videoContent">
+      <video controls>
+        <source src="<%=vid.video.url%>" type="video/mp4" />
+      </video>
+      <div class="videoInfo">
+        <span><h3><%=vid.title%></h3></span>
+        <span><h3><%=vid.description%></h3></span>
+        <div class="tag">
+          <% for(tag of vid.tags) { %>
+          <h1><%=tag%></h1>
+          <% }%>
+        </div>
+        <div class="uploader">
+          <div class="uploader-info">
+            <img
+              src="https://as1.ftcdn.net/v2/jpg/05/16/27/58/1000_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
+            />
+            <span><h3>Anonymous01</h3></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- you can also add some other  -->
+    </div>
+  </div>
+</body>

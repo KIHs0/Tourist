@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, gray 0%, black 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+      @property --angle {
+        syntax: "<angle>";
+        initial-value: 0deg;
+        inherits: false;
+      }
+      .loginContainer::before {
+        filter: blur(1.5rem);
+        opacity: 0.6;
+      }
+
+      .loginContainer::after,
+      .loginContainer::before {
+        --angle: 0deg;
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 100%;
+        height: 100%;
+        padding: 8px;
+        z-index: -1;
+        border-radius: 10px;
+        transform: translate(-50%, -50%);
+        background-image: conic-gradient(
+          from var(--angle),
+          transparent 95%,
+          blue
+        );
+        animation: 3s spin linear infinite;
+      }
+      @keyframes spin {
+        from {
+          --angle: 0deg;
+        }
+        to {
+          --angle: 360deg;
+        }
+      }
+      .loginContainer {
+        /* background: rgba(200, 228, 17, 1.9);
+         */
+        background: #333;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 450px;
+        padding: 40px;
+        text-align: center;
+        position: relative;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .loginContainer h1 {
+        color: #ddd;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .loginContainer p {
+        color: #ddd;
+        margin-bottom: 30px;
+        font-size: 1rem;
+      }
+
+      .loginContainer form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .input-group {
+        position: relative;
+      }
+
+      .loginContainer input {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #e6e6e6;
+        border-radius: 50px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.8);
+      }
+
+      .loginContainer input:focus {
+        border-color: #667eea;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+      }
+
+      .loginContainer input::placeholder {
+        color: #aaa;
+      }
+
+      .loginContainer button {
+        background: linear-gradient(to right, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        margin-top: 10px;
+      }
+
+      .loginContainer button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      }
+
+      .loginContainer .forgot-password {
+        color: #667eea;
+        text-decoration: none;
+        font-size: 0.9rem;
+        margin-top: 10px;
+        display: inline-block;
+        transition: all 0.3s ease;
+      }
+
+      .loginContainer .forgot-password:hover {
+        color: #764ba2;
+        text-decoration: underline;
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        margin: 20px 0;
+        color: #999;
+        font-size: 0.9rem;
+      }
+
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid #e6e6e6;
+      }
+
+      .divider::before {
+        margin-right: 1rem;
+      }
+
+      .divider::after {
+        margin-left: 1rem;
+      }
+
+      .signup-link {
+        color: #333;
+        font-size: 0.9rem;
+      }
+
+      .signup-link a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .signup-link a:hover {
+        color: yellow;
+        text-decoration: underline;
+      }
+
+      @media (max-width: 480px) {
+        .loginContainer {
+          padding: 30px 20px;
+        }
+
+        .loginContainer h1 {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="loginContainer">
+      <h1>Welcome</h1>
+      <p>Signup to create your account</p>
+
+      <form method="post" class="needs-validation">
+        <div class="input-group">
+          <input type="text" placeholder="Email" name="email" required />
+        </div>
+        <div class="input-group">
+          <input type="text" placeholder="Username" name="username" required />
+        </div>
+        <div class="input-group">
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            required
+          />
+        </div>
+
+        <button type="submit">SIGNUP</button>
+      </form>
+
+      <div class="divider">or</div>
+
+      <p class="signup-link">
+        Already have an account? <a href="/login">Log In</a>
+      </p>
+    </div>
+  </body>
+</html>
