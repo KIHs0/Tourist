@@ -163,8 +163,13 @@ header {
   color: beige;
 }
 @media (max-width: 768px) {
+  body {
+    touch-action: manipulation;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
   header {
-    padding: 0 2rem;
+    padding: 0 1rem;
     .search-input {
       right: 3.3rem;
       width: 8rem;
@@ -192,7 +197,7 @@ header {
       cursor: pointer;
       position: absolute;
       right: 0;
-      top: -2rem;
+      top: 0;
       width: 65vw;
       min-height: 100vh;
       .fa-xmark {
@@ -245,13 +250,21 @@ header {
       font-family: monospace;
       box-shadow: inset -10px 0 20px rgba(255, 255, 255, 0.5);
       padding: 0 5rem;
-      border-radius: 1.5em;
+      border-radius: 50%;
       width: 10vw;
+      left: 1rem;
       display: flex;
       margin: 0 auto;
       position: absolute;
       align-items: center;
       justify-content: center;
+    }
+    .main-sideBar .uploader-info .logout a {
+      color: black;
+      border-radius: 50%;
+    }
+    .fa-solid {
+      font-size: smaller;
     }
   }
 }

@@ -13,7 +13,7 @@ const storage = new CloudinaryStorage({
     resource_type: "video",
 
     format: "mp4", // supports promises as well
-    public_id: file.originalname.split(".")[0],
+    public_id: `${file.originalname.split(".")[0]}_${Date.now()}`,
   }),
 });
 module.exports = {

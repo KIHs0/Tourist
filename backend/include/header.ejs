@@ -45,9 +45,12 @@
                   <div><h4>playlist:</h4></div>
                   <div><h4>content:</h4></div>
                 </div>
+             <% if(currUser)
+              {%>
                 <div class="logout">
                   <h4><a href="/logout" class="navbar-brand">LOGOUT</a></h4>
                 </div>
+                <%}%> 
               </div>
 
               <!-- //add other -->
@@ -59,8 +62,17 @@
         </button>
       </div>
       <!-- mobile header below -->
+      
       <div class="rightsidesMOB" style="display: none">
+        <%if(!currUser) {%>
+          <a href="/signup" class="navbar-brand">
+          <i class="fa-solid fa-user"></i>
+
+          </a>
+          <%}%>
+        <a href="/newvideo" class="navbar-brand"><i class="fa-solid fa-file-video"></i></a>
         <i class="fa-solid fa-bars"> </i>
+
         
       </div>
     </div>
@@ -82,8 +94,10 @@
                   <div><h4>Subscriber:</h4></div>
                   <div><h4>playlist:</h4></div>
                   <div><h4>content:</h4></div>
-                <div class="logout">
-                  <h4><a href="/logout" class="navbar-brand">LOGOUT</a></h4>
+                  <% if(currUser) {%>
+                    <div class="logout">
+                      <h4><a href="/logout" class="navbar-brand">LOGOUT</a></h4>
+                      <% }%>
                 </div>
                 </div>
 

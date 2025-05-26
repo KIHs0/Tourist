@@ -25,6 +25,7 @@ const multer = require("multer");
 // });
 
 const { storage, cloudinary } = require("./backend/cloudconfig.js");
+const wrapasync = require("./backend/utils.js/wrapasync.js");
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === "video/mp4") {
     cb(null, true);
@@ -64,11 +65,27 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 app.get("/newvideo", (req, res) => res.render("add.ejs"));
 
-app.post("/newvideo", upload.single("video"), (req, res) => {
-  let { path, filename } = req.file;
-  console.log({ path, filename });
-  res.send(req.file || "No file recieved");
-});
+app.post(
+  "/newvideo",
+  upload.single("video"),
+  wrapasync(async (req, res) => {
+    let { path, filename } = req.file;
+    const newvid = new VideoData(req.body.video);
+    newvid.title = "new video !!!";
+    let date = Date.now();
+    newvid.description = ` Uploaded At ${date}`;
+    newvid.video.url = path;
+    newvid.video.thumbnailUrl =
+      "https://www.nsbpictures.com/wp-content/uploads/2021/01/background-for-thumbnail-youtube-14.jpg";
+    newvid.video.filename = filename;
+    let nw = await newvid.save().then((res) => {
+      console.log("new video uploaded");
+    });
+    console.log(nw);
+    req.flash("success", "Video Uploaded ⭐");
+    res.redirect("/");
+  })
+);
 
 app.post("/signup", async (req, res) => {
   let { email, username, password } = req.body;
@@ -118,9 +135,13 @@ app.get("/logout", (req, res) => {
     res.redirect("/");
   });
 });
+// main middleware/
 app.use((err, req, res, next) => {
-  console.error("Upload Error:", err.message);
-  res.status(500).json({ success: false, error: err.message });
+  console.log("middele ware runninx");
+  console.error(err.message);
+  res.flash("error", err.message);
+  // res.status(500).json({ success: false, error: err.message });
+  next();
 });
 
 app.use((req, res, next) => {
@@ -153,11 +174,14 @@ app.get("/", async (req, res) => {
 //       console.log("error on saving");
 //     });
 // });
-app.get("/video/:id/show", async (req, res) => {
-  const { id } = req.params;
-  const vid = await VideoData.findById(id);
-  res.render("show.ejs", { vid });
-});
+app.get(
+  "/video/:id/show",
+  wrapasync(async (req, res) => {
+    const { id } = req.params;
+    const vid = await VideoData.findById(id);
+    res.render("show.ejs", { vid });
+  })
+);
 app.get("/signup", (req, res) => {
   res.render("signup.ejs");
 });

@@ -46,12 +46,32 @@
       </h2>
       <form action="/newvideo" method="POST" enctype="multipart/form-data">
         <div class="mb-3">
+          <label for="title" class="form-label">title?</label>
+          <input
+            type="text"
+            class="form-control"
+            id="title"
+            name="video[title]"
+            value="..."
+          />
+        </div>
+        <div class="mb-3">
+          <label for="desc" class="form-label">description?</label>
+          <input
+            type="text"
+            class="form-control"
+            id="desc"
+            name="video[description]"
+            value="..."
+          />
+        </div>
+        <div class="mb-3">
           <label for="name" class="form-label">Name?</label>
           <input
             type="text"
             class="form-control"
             id="name"
-            name="name"
+            name="video[name]"
             value="Anonymous"
           />
         </div>
@@ -62,8 +82,8 @@
             type="email"
             class="form-control"
             id="email"
-            name="email"
-            value="Anonymous.hotmail"
+            name="video[email]"
+            value="Anonymous@hotmail.com"
           />
         </div>
 
