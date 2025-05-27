@@ -14,6 +14,7 @@ const multer = require("multer");
 const ffmpeg = require("fluent-ffmpeg");
 const ffmpegPath = require("ffmpeg-static");
 const fs = require("fs");
+const favicon = require("serve-favicon");
 ffmpeg.setFfmpegPath(ffmpegPath);
 
 const storage = multer.diskStorage({
@@ -43,6 +44,8 @@ const upload = multer({ storage });
 // const upload = multer({ storage, fileFilter });
 
 app.use(express.static(path.join(__dirname, "frontend", "public")));
+app.use(favicon(path.join(__dirname, "backend", "favicon", "favicon.ico")));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.set("views", path.join(__dirname, "./backend/views"));
@@ -113,8 +116,6 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
   try {
     console.log("fcx called");
     await ffmpegfx(inputPath, outputPath);
-    req.flash("success", "Video has uploaded 🌟");
-
     const newvid = new VideoData(req.body.video);
     newvid.title = "new video !!!";
     let date = Date.now();
@@ -199,29 +200,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.listen(port, () => {
-  console.log("server on at https://localhost:3030");
-});
-
 app.get("/", async (req, res) => {
   console.log(req.user);
   const data = await VideoData.find();
   res.render("home.ejs", { data });
 });
-// app.get("/add", async (req, res) => {
-//   const video = new VideoData({
-//     title: "new Video",
-//     filename: "MP4",
-//   });
-//   await video
-//     .save()
-//     .then((res) => {
-//       console.log("video saved");
-//     })
-//     .catch((err) => {
-//       console.log("error on saving");
-//     });
-// });
 app.get(
   "/video/:id/show",
   wrapasync(async (req, res) => {
@@ -235,6 +218,10 @@ app.get("/signup", (req, res) => {
 });
 app.get("/login", (req, res) => {
   res.render("login");
+});
+
+app.listen(port, () => {
+  console.log("server on at https://localhost:3030");
 });
 async function main() {
   await mongoose.connect(mongoUrl);

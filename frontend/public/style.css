@@ -47,7 +47,10 @@ header {
 .container-fluid .leftsides a {
   color: var(--fgcolor);
 }
-
+.container-fluid .rightsides a:hover {
+  transform: translateY(3px);
+  color: cornsilk;
+}
 .search-input {
   position: absolute;
   inset: 0;
