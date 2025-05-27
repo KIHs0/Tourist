@@ -11,21 +11,27 @@ const path = require("path");
 const User = require("./backend/models/user");
 const flash = require("express-flash");
 const multer = require("multer");
+const ffmpeg = require("fluent-ffmpeg");
+const ffmpegPath = require("ffmpeg-static");
+const fs = require("fs");
+ffmpeg.setFfmpegPath(ffmpegPath);
 
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, "uploads/");
-//   },
-//   filename: function (req, file, cb) {
-//     const ext = path.extname(file.originalname);
-//     const baseName = path.basename(file.originalname, ext);
-//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-//     cb(null, `${baseName}-${uniqueSuffix}${ext}`);
-//   },
-// });
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    const baseName = path.basename(file.originalname, ext);
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, `${baseName}-${uniqueSuffix}${ext}`);
+  },
+});
 
-const { storage, cloudinary } = require("./backend/cloudconfig.js");
+const { storages, cloudinary } = require("./backend/cloudconfig.js");
 const wrapasync = require("./backend/utils.js/wrapasync.js");
+const ErrorExpress = require("./backend/utils.js/error.js");
+const { stripTypeScriptTypes } = require("module");
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === "video/mp4") {
     cb(null, true);
@@ -33,10 +39,9 @@ const fileFilter = (req, file, cb) => {
     cb(new Error("Only .mp4 videos are allowed!"), false);
   }
 };
-// const upload = multer({ storage });
-const upload = multer({ storage, fileFilter });
+const upload = multer({ storage });
+// const upload = multer({ storage, fileFilter });
 
-app.use(flash());
 app.use(express.static(path.join(__dirname, "frontend", "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -60,32 +65,74 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
+
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 app.get("/newvideo", (req, res) => res.render("add.ejs"));
 
-app.post(
-  "/newvideo",
-  upload.single("video"),
-  wrapasync(async (req, res) => {
-    let { path, filename } = req.file;
+const compressedDir = path.join(__dirname, "compressedUploads");
+if (!fs.existsSync(compressedDir)) {
+  fs.mkdirSync(compressedDir);
+}
+
+app.post("/newvideo", upload.single("video"), async (req, res, next) => {
+  const inputPath = req.file.path;
+  const originalname = path.parse(req.file.originalname).name;
+  const outputPath = path.join(compressedDir, `${originalname}_compressed.mp4`);
+  console.log({ outputPath, compressedDir });
+  function ffmpegfx(inputPath, outputPath) {
+    return new Promise((resolve, reject) => {
+      ffmpeg(inputPath)
+        .outputOptions([
+          "-c:v libx264", // H.264 video codec
+          "-preset veryfast", // Compression speed/quality balance
+          "-crf 28", // Lower means better quality (18–28)
+          "-c:a aac", // Audio codec
+          "-b:a 128k",
+        ])
+        .on("end", async () => {
+          try {
+            console.log("compressfinished");
+            await fs.promises.unlink(inputPath, (err) => {
+              console.log("uplod del 101");
+            });
+            resolve("101 done deleting from uploads");
+          } catch {
+            reject(err);
+          }
+        })
+        .on("error", (err) => {
+          console.log("compressError", err);
+          reject(err);
+        })
+        .save(outputPath);
+    });
+  }
+  try {
+    console.log("fcx called");
+    await ffmpegfx(inputPath, outputPath);
+    req.flash("success", "Video has uploaded 🌟");
+
     const newvid = new VideoData(req.body.video);
     newvid.title = "new video !!!";
     let date = Date.now();
     newvid.description = ` Uploaded At ${date}`;
-    newvid.video.url = path;
+    newvid.video.url = req.file.path;
     newvid.video.thumbnailUrl =
       "https://www.nsbpictures.com/wp-content/uploads/2021/01/background-for-thumbnail-youtube-14.jpg";
-    newvid.video.filename = filename;
+    newvid.video.filename = req.file.filename;
     let nw = await newvid.save().then((res) => {
       console.log("new video uploaded");
     });
     console.log(nw);
     req.flash("success", "Video Uploaded ⭐");
     res.redirect("/");
-  })
-);
+  } catch {
+    req.flash("error", "we are unable at your region");
+  }
+});
 
 app.post("/signup", async (req, res) => {
   let { email, username, password } = req.body;
@@ -96,6 +143,7 @@ app.post("/signup", async (req, res) => {
       return next(err);
     } else {
       res.redirect("/");
+      req.flash("success", `welcome You ${username}`);
     }
   });
   res.cookie(username, password, {
@@ -109,8 +157,8 @@ app.post("/signup", async (req, res) => {
 app.post(
   "/login",
   passport.authenticate("local", {
-    failureRedirect: "/login",
     failureFlash: true,
+    failureRedirect: "/login",
   }),
   function (req, res) {
     let { username, password } = req.user;
@@ -139,7 +187,7 @@ app.get("/logout", (req, res) => {
 app.use((err, req, res, next) => {
   console.log("middele ware runninx");
   console.error(err.message);
-  res.flash("error", err.message);
+  req.flash("error", err.message);
   // res.status(500).json({ success: false, error: err.message });
   next();
 });
@@ -186,7 +234,7 @@ app.get("/signup", (req, res) => {
   res.render("signup.ejs");
 });
 app.get("/login", (req, res) => {
-  res.render("login.ejs");
+  res.render("login");
 });
 async function main() {
   await mongoose.connect(mongoUrl);
