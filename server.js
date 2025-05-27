@@ -14,34 +14,42 @@ const multer = require("multer");
 const ffmpeg = require("fluent-ffmpeg");
 const ffmpegPath = require("ffmpeg-static");
 const fs = require("fs");
+const promises = require("fs").promises;
 const favicon = require("serve-favicon");
+const port = 3030;
+const wrapasync = require("./backend/utils.js/wrapasync.js");
+const ErrorExpress = require("./backend/utils.js/error.js");
+const uploads = path.join(__dirname, "uploads");
+const cup = path.join(__dirname, "cup");
+if (!fs.existsSync(uploads)) {
+  fs.mkdirSync(uploads);
+}
+if (!fs.existsSync(cup)) {
+  fs.mkdirSync(cup);
+}
+
 ffmpeg.setFfmpegPath(ffmpegPath);
 
+const { cloudinary } = require("./backend/cloudconfig.js");
+//multer setup
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
-    const baseName = path.basename(file.originalname, ext);
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, `${baseName}-${uniqueSuffix}${ext}`);
+    cb(null, `${file.fieldname}-${Date.now()}${ext}`);
   },
 });
-
-const { storages, cloudinary } = require("./backend/cloudconfig.js");
-const wrapasync = require("./backend/utils.js/wrapasync.js");
-const ErrorExpress = require("./backend/utils.js/error.js");
-const { stripTypeScriptTypes } = require("module");
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === "video/mp4") {
+  const allowedTypes = ["video/mp4"];
+  if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Only .mp4 videos are allowed!"), false);
+    cb(new Error("Only MP4 videos are allowed"));
   }
 };
-const upload = multer({ storage });
-// const upload = multer({ storage, fileFilter });
+const upload = multer({ storage, fileFilter });
 
 app.use(express.static(path.join(__dirname, "frontend", "public")));
 app.use(favicon(path.join(__dirname, "backend", "favicon", "favicon.ico")));
@@ -51,7 +59,6 @@ app.use(express.json());
 app.set("views", path.join(__dirname, "./backend/views"));
 app.set("view engine", "ejs");
 app.engine("ejs", engine);
-const port = 3030;
 app.use(require("cookie-parser")("keybodarCat"));
 app.use(require("body-parser").urlencoded({ extended: true }));
 app.use(
@@ -73,18 +80,14 @@ app.use(flash());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
 app.get("/newvideo", (req, res) => res.render("add.ejs"));
-
-const compressedDir = path.join(__dirname, "compressedUploads");
-if (!fs.existsSync(compressedDir)) {
-  fs.mkdirSync(compressedDir);
-}
-
 app.post("/newvideo", upload.single("video"), async (req, res, next) => {
   const inputPath = req.file.path;
+  const timeStamp = new Date().toISOString().replace(/[:.]/g, "-");
   const originalname = path.parse(req.file.originalname).name;
   const outputPath = path.join(compressedDir, `${originalname}_compressed.mp4`);
-  console.log({ outputPath, compressedDir });
+  // console.log({ outputPath, inputPath });
   function ffmpegfx(inputPath, outputPath) {
     return new Promise((resolve, reject) => {
       ffmpeg(inputPath)
@@ -98,11 +101,9 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
         .on("end", async () => {
           try {
             console.log("compressfinished");
-            await fs.promises.unlink(inputPath, (err) => {
-              console.log("uplod del 101");
-            });
-            resolve("101 done deleting from uploads");
-          } catch {
+
+            resolve();
+          } catch (err) {
             reject(err);
           }
         })
@@ -116,25 +117,34 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
   try {
     console.log("fcx called");
     await ffmpegfx(inputPath, outputPath);
+
+    const result = await cloudinary.uploader.upload(outputPath, {
+      folder: "ProjectX",
+      resource_type: "video",
+      format: "mp4",
+      public_id: `${originalname}_${timeStamp}`, // same logic as in your CloudinaryStorage config
+    });
     const newvid = new VideoData(req.body.video);
     newvid.title = "new video !!!";
-    let date = Date.now();
-    newvid.description = ` Uploaded At ${date}`;
-    newvid.video.url = req.file.path;
+    console.log(req.file);
+    newvid.description = `Uploaded at ${new Date().toLocaleString()}`;
+    newvid.video.url = result.secure_url;
     newvid.video.thumbnailUrl =
       "https://www.nsbpictures.com/wp-content/uploads/2021/01/background-for-thumbnail-youtube-14.jpg";
-    newvid.video.filename = req.file.filename;
-    let nw = await newvid.save().then((res) => {
-      console.log("new video uploaded");
-    });
-    console.log(nw);
+    newvid.video.filename = result.public_id;
+
+    await newvid.save();
+    console.log("new video uploaded", newvid);
     req.flash("success", "Video Uploaded ⭐");
+    fs.unlinkSync(inputPath);
+    fs.unlinkSync(outputPath);
     res.redirect("/");
-  } catch {
+  } catch (err) {
+    console.log("upload err".err);
     req.flash("error", "we are unable at your region");
+    res.redirect("/");
   }
 });
-
 app.post("/signup", async (req, res) => {
   let { email, username, password } = req.body;
   let user = new User({ email, username });
@@ -154,7 +164,6 @@ app.post("/signup", async (req, res) => {
     sameSite: "strict",
   });
 });
-
 app.post(
   "/login",
   passport.authenticate("local", {
@@ -173,7 +182,6 @@ app.post(
     res.redirect("/");
   }
 );
-
 app.get("/logout", (req, res) => {
   req.logout((err) => {
     if (err) {
@@ -192,19 +200,20 @@ app.use((err, req, res, next) => {
   // res.status(500).json({ success: false, error: err.message });
   next();
 });
-
+//locals middleware
 app.use((req, res, next) => {
   res.locals.successMsg = req.flash("success");
   res.locals.errorMsg = req.flash("error");
   res.locals.currUser = req.user;
   next();
 });
-
+//indexRoute
 app.get("/", async (req, res) => {
-  console.log(req.user);
+  // console.log(req.user);
   const data = await VideoData.find();
   res.render("home.ejs", { data });
 });
+//showRoute
 app.get(
   "/video/:id/show",
   wrapasync(async (req, res) => {
@@ -219,7 +228,7 @@ app.get("/signup", (req, res) => {
 app.get("/login", (req, res) => {
   res.render("login");
 });
-
+//serverXdb
 app.listen(port, () => {
   console.log("server on at https://localhost:3030");
 });
