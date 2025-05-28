@@ -7,8 +7,11 @@ const mainuserIcon = document.querySelector(".main-userIcon");
 
 search.addEventListener("click", (e) => {
   const searchInput = document.querySelector(".search-input");
+  const btnsearchInput = document.querySelector(".btn-search-input");
   searchInput.style.display =
     searchInput.style.display == "none" ? "block" : "none";
+  btnsearchInput.style.display =
+    btnsearchInput.style.display == "none" ? "block" : "none";
 });
 hamburger.addEventListener("click", (e) => {
   mainSidebar.style.display =

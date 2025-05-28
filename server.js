@@ -20,22 +20,27 @@ const favicon = require("serve-favicon");
 const port = 3030;
 const wrapasync = require("./backend/utils.js/wrapasync.js");
 const ErrorExpress = require("./backend/utils.js/error.js");
+const { cloudinary } = require("./backend/cloudconfig.js");
 const uploads = path.join(__dirname, "uploads");
 const thumbnail = path.join(__dirname, "thumbnail");
 const cup = path.join(__dirname, "cup");
+// file making
+
 if (!fs.existsSync(uploads)) {
   fs.mkdirSync(uploads);
+}
+if (!fs.existsSync(cup)) {
+  fs.mkdirSync(cup);
 }
 if (!fs.existsSync(thumbnail)) {
   fs.mkdirSync(thumbnail);
 }
+// ffmmpeg setup
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
 
-const { cloudinary } = require("./backend/cloudconfig.js");
-const { error } = require("console");
-//multer setup
+//multer  setup
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -54,11 +59,9 @@ const fileFilter = (req, file, cb) => {
   }
 };
 const upload = multer({ storage, fileFilter });
-
 app.use("/thumbnail", express.static(path.join(__dirname, "thumbnail")));
 app.use(express.static(path.join(__dirname, "frontend", "public")));
 app.use(favicon(path.join(__dirname, "backend", "favicon", "favicon.ico")));
-
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.set("views", path.join(__dirname, "./backend/views"));
@@ -81,11 +84,10 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-
+// new video Route
 app.get("/newvideo", (req, res) => res.render("add.ejs"));
 app.post("/newvideo", upload.single("video"), async (req, res, next) => {
   const inputPath = req.file.path;
@@ -178,6 +180,11 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
     res.redirect("/");
   }
 });
+// signup Route
+
+app.get("/signup", (req, res) => {
+  res.render("signup.ejs");
+});
 app.post("/signup", async (req, res) => {
   let { email, username, password } = req.body;
   let user = new User({ email, username });
@@ -197,6 +204,11 @@ app.post("/signup", async (req, res) => {
     sameSite: "strict",
   });
 });
+// login route
+
+app.get("/login", (req, res) => {
+  res.render("login");
+});
 app.post(
   "/login",
   passport.authenticate("local", {
@@ -215,6 +227,8 @@ app.post(
     res.redirect("/");
   }
 );
+//logout Route
+
 app.get("/logout", (req, res) => {
   req.logout((err) => {
     if (err) {
@@ -225,7 +239,8 @@ app.get("/logout", (req, res) => {
     res.redirect("/");
   });
 });
-// main middleware/
+// main middleware
+
 app.use((err, req, res, next) => {
   console.log("middele ware runninx");
   console.error(err.message);
@@ -234,19 +249,35 @@ app.use((err, req, res, next) => {
   next();
 });
 //locals middleware
+
 app.use((req, res, next) => {
   res.locals.successMsg = req.flash("success");
   res.locals.errorMsg = req.flash("error");
   res.locals.currUser = req.user;
   next();
 });
-//indexRoute
+//index Route and home.ejs
+
 app.get("/", async (req, res) => {
   // console.log(req.user);
   const data = await VideoDatas.find();
   res.render("home.ejs", { data });
 });
-//showRoute
+//search Route and search.ejs
+
+app.get("/search", async (req, res) => {
+  const query = req.query.query;
+  if (!query) return res.render("search", { result: [] });
+  const word = query.split(" ");
+  const regexes = word.map((word) => new RegExp(word, "i"));
+  const results = await VideoDatas.find({
+    $or: regexes.flatMap((rgx) => [{ title: rgx }, { description: rgx }]),
+  });
+  res.render("search.ejs", { results, searchQuery: query });
+});
+
+//show Route and show.ejs
+
 app.get(
   "/video/:id/show",
   wrapasync(async (req, res) => {
@@ -255,13 +286,9 @@ app.get(
     res.render("show.ejs", { vid });
   })
 );
-app.get("/signup", (req, res) => {
-  res.render("signup.ejs");
-});
-app.get("/login", (req, res) => {
-  res.render("login");
-});
+
 //serverXdb
+
 app.listen(port, () => {
   console.log("server on at https://localhost:3030");
 });

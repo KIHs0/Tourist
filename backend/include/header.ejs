@@ -4,14 +4,19 @@
       <div class="leftsides">
         <a class="navbar-brand" style="font-weight: bolder">ProjectX</a>
       </div>
-      <div>
-        <input
-          style="display: none"
+      <div >
+        <form action="/search" method="get">
+
+          <input style="display: none;"
           class="form-control me-2 search-input"
           type="search"
-          placeholder="Search"
-        />
-      </div>
+          name="query"
+          required
+          placeholder="Search Videos..."
+           />  
+          <button type="submit" class="btn-search-input"  style="cursor: pointer;display: none ; z-index: 200; margin-left: 25rem; " >🔍</button>
+        </form>
+        </div>
       <div class="rightsides">
         <a href="/" class="navbar-brand">Home</a>
         <a href="/newvideo" class="navbar-brand"><i class="fa-solid fa-file-video"></i></a>
@@ -77,6 +82,7 @@
       </div>
     </div>
   </nav>
+  <!-- fr mobile  -->
   <main class="main-sideBar" style="display: none">
     <span>
       <i class="fa-solid fa-xmark fa-xmarkfrsidebar"></i>

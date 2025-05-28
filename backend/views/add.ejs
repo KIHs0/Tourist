@@ -13,6 +13,17 @@
         background-color: #000;
         font-family: sans-serif;
       }
+      .upload-bar {
+        display: none !important;
+      }
+      .upload-bar.show-upload {
+        display: flex !important; /* this overrides .upload-bar's display:none */
+      }
+      .form-container:hover {
+        box-shadow: 0 6px 40px rgba(0, 0, 0, 0.8),
+          inset 0 0 30px rgba(255, 255, 255, 0.07);
+        transform: scale(1.01);
+      }
       .form-container {
         max-width: 600px;
         margin: 50px auto;
@@ -41,6 +52,14 @@
   </head>
   <body>
     <div class="form-container">
+      <div class="d-flex align-items-center upload-bar">
+        <strong>Uploading...</strong>
+        <div
+          class="spinner-border ms-auto"
+          role="status"
+          aria-hidden="true"
+        ></div>
+      </div>
       <h2 class="text-center" style="font-size: 1rem; margin-bottom: 1rem">
         👻 Be Anonymous & Upload
       </h2>
@@ -103,7 +122,9 @@
         <video id="videoPreview" controls></video>
 
         <div class="d-grid mt-4">
-          <button type="submit" class="btn btn-primary">Upload Video</button>
+          <button type="submit" class="btn btn-primary upload-btn">
+            Upload Video
+          </button>
         </div>
       </form>
     </div>
@@ -111,8 +132,14 @@
     <script>
       const videoInput = document.getElementById("video");
       const videoPreview = document.getElementById("videoPreview");
+      const button = document.querySelector(".upload-btn");
+      const upload = document.querySelector(".upload-bar");
 
       videoInput.addEventListener("change", function () {
+        button.addEventListener("click", (e) => {
+          console.log("fired");
+          upload.classList.toggle("show-upload");
+        });
         const file = this.files[0];
 
         if (file && file.type.startsWith("video/")) {
@@ -128,35 +155,3 @@
     </script>
   </body>
 </html>
-<style>
-  .form-container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 30px;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.05); /* subtle white glass layer */
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6),
-      inset 0 0 20px rgba(255, 255, 255, 0.05); /* inner glow */
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    color: #f5f5f5;
-    transition: all 0.3s ease;
-    background-image: linear-gradient(
-      to bottom right,
-      rgba(255, 255, 255, 0.05),
-      rgba(255, 255, 255, 0.01)
-    );
-  }
-  body {
-    background: #0d0d0d;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    color: #fff;
-    padding: 0 3rem;
-  }
-  .form-container:hover {
-    box-shadow: 0 6px 40px rgba(0, 0, 0, 0.8),
-      inset 0 0 30px rgba(255, 255, 255, 0.07);
-    transform: scale(1.01);
-  }
-</style>
