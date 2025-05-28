@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const user = require("./user");
 const videoSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -12,19 +13,21 @@ const videoSchema = new mongoose.Schema({
     },
     thumbnailUrl: {
       type: String,
-      required: true,
     },
     url: {
       type: String,
       required: true,
     },
-  },
-
-  tags: [
-    {
+    tags: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
+    owner: {
       type: String,
     },
-  ],
+  },
 });
 const VideoData = mongoose.model("VideoData", videoSchema);
 module.exports = VideoData;
