@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const VideoData = require("./backend/models/video");
+const VideoDatas = require("./backend/models/video");
 const mongoUrl = "mongodb://127.0.0.1:27017/VideoData";
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -13,6 +13,7 @@ const flash = require("express-flash");
 const multer = require("multer");
 const ffmpeg = require("fluent-ffmpeg");
 const ffmpegPath = require("ffmpeg-static");
+const ffprobePath = require("ffprobe-static").path;
 const fs = require("fs");
 const promises = require("fs").promises;
 const favicon = require("serve-favicon");
@@ -20,17 +21,20 @@ const port = 3030;
 const wrapasync = require("./backend/utils.js/wrapasync.js");
 const ErrorExpress = require("./backend/utils.js/error.js");
 const uploads = path.join(__dirname, "uploads");
+const thumbnail = path.join(__dirname, "thumbnail");
 const cup = path.join(__dirname, "cup");
 if (!fs.existsSync(uploads)) {
   fs.mkdirSync(uploads);
 }
-if (!fs.existsSync(cup)) {
-  fs.mkdirSync(cup);
+if (!fs.existsSync(thumbnail)) {
+  fs.mkdirSync(thumbnail);
 }
 
 ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfprobePath(ffprobePath);
 
 const { cloudinary } = require("./backend/cloudconfig.js");
+const { error } = require("console");
 //multer setup
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -51,6 +55,7 @@ const fileFilter = (req, file, cb) => {
 };
 const upload = multer({ storage, fileFilter });
 
+app.use("/thumbnail", express.static(path.join(__dirname, "thumbnail")));
 app.use(express.static(path.join(__dirname, "frontend", "public")));
 app.use(favicon(path.join(__dirname, "backend", "favicon", "favicon.ico")));
 
@@ -84,10 +89,14 @@ passport.deserializeUser(User.deserializeUser());
 app.get("/newvideo", (req, res) => res.render("add.ejs"));
 app.post("/newvideo", upload.single("video"), async (req, res, next) => {
   const inputPath = req.file.path;
-  const timeStamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const timeStamp = new Date().toLocaleString();
   const originalname = path.parse(req.file.originalname).name;
-  const outputPath = path.join(compressedDir, `${originalname}_compressed.mp4`);
-  // console.log({ outputPath, inputPath });
+
+  const outputPath = path.join(cup, `${originalname}_compressed.mp4`);
+  const thumbPath = path.join(
+    thumbnail,
+    `${originalname}_compressedthumbnail.jpg`
+  );
   function ffmpegfx(inputPath, outputPath) {
     return new Promise((resolve, reject) => {
       ffmpeg(inputPath)
@@ -98,18 +107,37 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
           "-c:a aac", // Audio codec
           "-b:a 128k",
         ])
+
         .on("end", async () => {
           try {
             console.log("compressfinished");
 
-            resolve();
+            ffmpeg(outputPath)
+              .screenshots({
+                count: 1,
+                folder: path.dirname(thumbPath),
+                filename: path.basename(
+                  `${originalname}_compressedthumbnail.jpg`
+                ),
+                size: "320x240",
+              })
+              .on("end", async () => {
+                console.log("thumbnail Generated");
+                resolve();
+              })
+              .on("error", (err) => {
+                console.log("compressError", err);
+                reject(new ErrorExpress("thumbnail not generated"));
+              });
           } catch (err) {
-            reject(err);
+            reject(new ErrorExpress("failed  upl thumbnai at cloudinary"));
           }
         })
+        .on("end", (req, res) => {
+          console.log("finished doing ffmpegfx");
+        })
         .on("error", (err) => {
-          console.log("compressError", err);
-          reject(err);
+          reject(new ErrorExpress("failed upl vidoe at cloudinary"));
         })
         .save(outputPath);
     });
@@ -124,20 +152,25 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
       format: "mp4",
       public_id: `${originalname}_${timeStamp}`, // same logic as in your CloudinaryStorage config
     });
-    const newvid = new VideoData(req.body.video);
+    const result2 = await cloudinary.uploader.upload(thumbPath, {
+      folder: "ProjectX",
+      resource_type: "image",
+      format: "jpg",
+      public_id: `${originalname}_${timeStamp}_thumb`,
+    });
+
+    const newvid = new VideoDatas(req.body.video);
     newvid.title = "new video !!!";
-    console.log(req.file);
     newvid.description = `Uploaded at ${new Date().toLocaleString()}`;
     newvid.video.url = result.secure_url;
-    newvid.video.thumbnailUrl =
-      "https://www.nsbpictures.com/wp-content/uploads/2021/01/background-for-thumbnail-youtube-14.jpg";
+    newvid.video.thumbnailUrl = result2.secure_url;
     newvid.video.filename = result.public_id;
 
     await newvid.save();
-    console.log("new video uploaded", newvid);
     req.flash("success", "Video Uploaded ⭐");
     fs.unlinkSync(inputPath);
     fs.unlinkSync(outputPath);
+    fs.unlinkSync(thumbPath);
     res.redirect("/");
   } catch (err) {
     console.log("upload err".err);
@@ -210,7 +243,7 @@ app.use((req, res, next) => {
 //indexRoute
 app.get("/", async (req, res) => {
   // console.log(req.user);
-  const data = await VideoData.find();
+  const data = await VideoDatas.find();
   res.render("home.ejs", { data });
 });
 //showRoute
@@ -218,7 +251,7 @@ app.get(
   "/video/:id/show",
   wrapasync(async (req, res) => {
     const { id } = req.params;
-    const vid = await VideoData.findById(id);
+    const vid = await VideoDatas.findById(id);
     res.render("show.ejs", { vid });
   })
 );

@@ -4,6 +4,7 @@ let { data } = require("./init");
 const mongoUrl = "mongodb://127.0.0.1:27017/VideoData";
 
 const initdb = async function () {
+  
   await VideoData.insertMany(data);
 };
 initdb();
