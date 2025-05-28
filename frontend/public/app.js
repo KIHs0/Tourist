@@ -4,10 +4,10 @@ const hamburger = document.querySelector(".fa-bars");
 const xMarkfrsidebar = document.querySelector(".fa-xmarkfrsidebar");
 const faxmarkfruserIcon = document.querySelector(".fa-xmarkfruserIcon");
 const mainuserIcon = document.querySelector(".main-userIcon");
-
+const searchInput = document.querySelector(".search-input");
+const btnsearchInput = document.querySelector(".btn-search-input");
+const resultsDiv = document.getElementById("resultsfrinput");
 search.addEventListener("click", (e) => {
-  const searchInput = document.querySelector(".search-input");
-  const btnsearchInput = document.querySelector(".btn-search-input");
   searchInput.style.display =
     searchInput.style.display == "none" ? "block" : "none";
   btnsearchInput.style.display =
@@ -30,3 +30,37 @@ faxmarkfruserIcon.addEventListener("click", (e) => {
   mainuserIcon.style.display =
     mainuserIcon.style.display == "none" ? "block" : "none";
 });
+
+searchInput.addEventListener("keyup", async (e) => {
+  const query = e.target.value;
+  if (!query) {
+    return;
+  }
+  const res = await fetch(`/search/live?query=${encodeURIComponent(query)}`);
+
+  const data = await res.json();
+  rendervideoLive(data);
+});
+const rendervideoLive = (videos) => {
+  if (videos.length == 0) {
+    resultsDiv.innerHTML = "<h4>No results found</h4>";
+    return;
+  }
+  // Create HTML for each video item
+  const html = videos
+    .map(
+      (video) => `
+<a href="/video/${video._id}/show">
+      
+    <div class="video-item">
+    <h3>${video.title}</h3>
+    <p>${video.description}</p>
+    
+    </div>
+</a>`
+    )
+
+    .join("");
+  resultsDiv.style.display = "block";
+  resultsDiv.innerHTML = html;
+};

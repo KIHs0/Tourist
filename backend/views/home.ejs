@@ -1,6 +1,5 @@
 <%layout("../layout/plate.ejs")%>
 <body>
- 
   <div class="container">
     <% for ( data of data) { %>
     <div class="card">
@@ -25,5 +24,16 @@
     </div>
 
     <% } %>
+    <!-- // next prev -->
+     <div class="pagination">
+
+       <%if(currentPage>1) {%>
+        <a href="/?page=<%=currentPage-1%>"><span><i class="fa-solid fa-arrow-left"></i></span></a>
+        <%}%>
+        <%if(currentPage<totalPages) {%>
+          <a href="/?page=<%=currentPage+1%>"><span><i class="fa-solid fa-arrow-right"></i></span></a>
+          <%}%>
+        </div>
+
   </div>
 </body>

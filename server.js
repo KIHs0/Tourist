@@ -260,8 +260,16 @@ app.use((req, res, next) => {
 
 app.get("/", async (req, res) => {
   // console.log(req.user);
-  const data = await VideoDatas.find();
-  res.render("home.ejs", { data });
+  const page = parseInt(req.query.page) || 1;
+  const limit = 10;
+  const skip = (page - 1) * limit;
+  const total = await VideoDatas.countDocuments({});
+  const totalPages = Math.ceil(total / limit);
+  const data = await VideoDatas.find({})
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+  res.render("home.ejs", { data, totalPages, currentPage: page });
 });
 //search Route and search.ejs
 
@@ -275,9 +283,29 @@ app.get("/search", async (req, res) => {
   });
   res.render("search.ejs", { results, searchQuery: query });
 });
+// search live and result and sending res to frontend
+app.get("/search/live", async (req, res) => {
+  const query = req.query.query;
 
+  if (!query) {
+    return res.json([]);
+  }
+
+  const words = query.split(" ").filter(Boolean);
+  const regexes = words.map((word) => new RegExp(word, "i"));
+
+  try {
+    const results = await VideoDatas.find({
+      $or: regexes.flatMap((rgx) => [{ title: rgx }, { description: rgx }]),
+    }).limit(12);
+
+    res.json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
 //show Route and show.ejs
-
 app.get(
   "/video/:id/show",
   wrapasync(async (req, res) => {
@@ -286,9 +314,7 @@ app.get(
     res.render("show.ejs", { vid });
   })
 );
-
 //serverXdb
-
 app.listen(port, () => {
   console.log("server on at https://localhost:3030");
 });

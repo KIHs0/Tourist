@@ -171,6 +171,163 @@ header {
   color: white;
   /* box-shadow: 0 0 8px rgba(0, 255, 255, 0.3); */
 }
+
+/* css for /video/live/search */
+#resultsfrinput {
+  position: absolute;
+  left: 20rem;
+  top: 3.9rem;
+  display: none;
+  width: 25vw;
+  max-height: 60vh;
+  overflow-y: auto;
+  border-radius: 16px;
+  background-color: rgba(30, 30, 30, 0.95);
+  color: white;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+  padding: 0.3rem 0;
+  transition: all 0.3s ease-in-out;
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
+}
+
+/* Custom Scrollbar for Webkit (Chrome, Edge) */
+#resultsfrinput::-webkit-scrollbar {
+  width: 6px;
+}
+#resultsfrinput::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+#resultsfrinput::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.video-item {
+  padding: 0.7rem 1rem;
+  width: 100%;
+  background-color: transparent;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+}
+
+.video-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: cyan;
+  transform: scale(1.01);
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
+}
+
+.video-item:first-child {
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+.video-item:last-child {
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  border-bottom: none;
+}
+
+#resultsfrinput h3 {
+  font-size: 1rem;
+  margin: 0;
+  color: #fff;
+  font-weight: 600;
+}
+#resultsfrinput h4 {
+  font-size: 0.7rem;
+  margin: 0.2rem 0.5rem;
+  color: #ccc;
+  animation: fadeIn 0.3s ease;
+}
+#resultsfrinput p {
+  font-size: 0.85rem;
+  margin: 0.2rem 0 0;
+  color: #ccc;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* css for /video/live/search */
+
+/*  pagination */
+
+.pagination {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  top: 50%;
+  justify-content: space-between;
+  width: 100vw;
+  height: 5rem;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  z-index: 10;
+}
+
+.pagination a {
+  text-decoration: none;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.pagination a:hover {
+  transform: scale(1.2);
+}
+
+.pagination i {
+  color: #ccc;
+  font-size: 1.8rem;
+  position: relative;
+}
+
+.pagination span::before,
+.pagination span::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: cyan;
+
+  border-radius: 50%;
+  opacity: 0.6;
+  transition: all 0.3s ease-in-out;
+}
+
+.pagination span::before {
+  top: -8px;
+  left: -8px;
+}
+
+.pagination span::after {
+  bottom: -8px;
+  right: -8px;
+}
+
+.pagination a:hover span::before,
+.pagination a:hover span::after {
+  opacity: 1;
+  width: 10px;
+  height: 10px;
+  background: cyan;
+}
+/*  pagination */
+
 .prompt {
   margin-left: 2rem;
   color: aliceblue;
@@ -239,9 +396,18 @@ a {
     touch-action: manipulation;
     overflow-x: hidden;
     overflow-y: auto;
+    padding: 0.5rem 2rem;
+  }
+
+  .pagination i {
+    font-size: 1rem;
+  }
+  .pagination {
+    height: 3rem;
+    padding: 0 0.7em 0 0.7em;
   }
   header {
-    padding: 0 1rem;
+    padding: 0 4rem 0 0;
     .search-input {
       right: 3.3rem;
       width: 8rem;
