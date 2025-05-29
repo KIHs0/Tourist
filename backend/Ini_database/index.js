@@ -4,8 +4,13 @@ let { data } = require("./init");
 const mongoUrl = "mongodb://127.0.0.1:27017/VideoData";
 
 const initdb = async function () {
-  
-  await VideoData.insertMany(data);
+  // await VideoData.deleteMany({});
+  const newdata = data.map(({ tags, ...rest }) => rest);
+  newdata.map(({ video, ...rest }) => {
+    video.owner = "Anonymous01";
+    video.tags = ["new video", "admin", "xxx"];
+  });
+  await VideoData.insertMany(newdata);
 };
 initdb();
 

@@ -91,7 +91,7 @@ passport.deserializeUser(User.deserializeUser());
 app.get("/newvideo", (req, res) => res.render("add.ejs"));
 app.post("/newvideo", upload.single("video"), async (req, res, next) => {
   const inputPath = req.file.path;
-  const timeStamp = new Date().toLocaleString();
+  const timeStamp = new Date().toISOString();
   const originalname = path.parse(req.file.originalname).name;
 
   const outputPath = path.join(cup, `${originalname}_compressed.mp4`);
@@ -165,14 +165,16 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
     newvid.title = "new video !!!";
     newvid.description = `Uploaded at ${new Date().toLocaleString()}`;
     newvid.video.url = result.secure_url;
+    newvid.video.tags = req.body.video.categories;
+    newvid.video.owner = req.body.video.name || "Anonymous";
     newvid.video.thumbnailUrl = result2.secure_url;
     newvid.video.filename = result.public_id;
-
     await newvid.save();
-    req.flash("success", "Video Uploaded ⭐");
     fs.unlinkSync(uploads);
     fs.unlinkSync(outputPath);
     fs.unlinkSync(thumbPath);
+    req.flash("success", "Video Uploaded ⭐");
+
     res.redirect("/");
   } catch (err) {
     console.log("upload err".err);
