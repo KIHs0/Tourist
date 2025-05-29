@@ -1,121 +1,513 @@
-<body>
-  <nav class="navbar navbar-light bg-none">
-    <div class="container-fluid">
-      <div class="leftsides">
-        <a class="navbar-brand" style="font-weight: bolder">ProjectX</a>
-      </div>
-      <div >
-        <form action="/search" method="get">
-          <input style="display: none;"
-          class="form-control me-2 search-input"
-          type="search"
-          name="query"
-          required
-          placeholder="Search Videos..."
-           />  
-           <!-- live serach show -->
-           <div id="resultsfrinput"></div>
-          <button type="submit" class="btn-search-input"  style="cursor: pointer;display: none ; z-index: 200; margin-left: 25rem; " >🔍</button>
-        </form>
-        </div>
-      <div class="rightsides">
-        <a href="/" class="navbar-brand">Home</a>
-        <a href="/newvideo" class="navbar-brand"><i class="fa-solid fa-file-video"></i></a>
-        <!-- <a href="/about" class="navbar-brand">About</a> -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ProjectX - Video Sharing Platform</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* Unique class prefix to avoid conflicts */
+      .vs-header {
+        --vs-bg-primary: #0f0f0f;
+        --vs-text-primary: #ffffff;
+        --vs-accent: #ff0000;
+        --vs-hover: #ff4d4d;
+        --vs-bg-secondary: #1a1a1a;
+        --vs-height: 60px;
+        --vs-transition: 0.3s;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: var(--vs-height);
+        /* background-color: var(--vs-bg-primary); */
+        color: var(--vs-text-primary);
+        z-index: 9999;
+        padding: 0 1rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+      }
 
-        <%if(!currUser){%>
-        <a href="/signup" class="navbar-brand">Register</a>
+      .vs-navbar {
+        width: 100%;
+        padding: 0;
+        margin: 2rem;
+        overflow: hidden;
+      }
 
-        <%} else{%>
-        <a class="navbar-brand userIcon" onclick="profile()">
-          <i class="fa-solid fa-user"></i>
-        </a>
+      .vs-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
 
-        <% }%>
+      /* Left Side */
+      .vs-left a {
+        font-size: 1.8rem;
+        font-weight: 800;
+        text-decoration: none;
+        color: var(--vs-accent);
+        transition: color var(--vs-transition) ease;
+        letter-spacing: -1px;
+      }
 
-        <main class="main-userIcon" style="display: none">
-          <span>
-            <i class="fa-solid fa-xmark fa-xmarkfruserIcon"></i>
-          </span>
-          <div class="userInfo">
-            <div class="uploader">
-              <div class="uploader-info">
-                <img
-                  src="https://as1.ftcdn.net/v2/jpg/05/16/27/58/1000_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
-                  alt="anonymous.jpg"
-                />
-                <h2><strong>Anonymous01</strong></h2>
-                <div class="datauser">
-                  <div><h4>like:</h4></div>
-                  <div><h4>Subscriber:</h4></div>
-                  <div><h4>playlist:</h4></div>
-                  <div><h4>content:</h4></div>
+      .vs-left a:hover {
+        color: var(--vs-hover);
+      }
+
+      /* Search Form */
+      .vs-search-container {
+        position: relative;
+        flex-grow: 1;
+        max-width: 600px;
+        margin: 0 1.5rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .vs-search-input {
+        width: 100%;
+        padding: 0.6rem 1.2rem;
+        border: 1px solid #333;
+        border-radius: 30px;
+        outline: none;
+        background-color: #121212;
+        color: var(--vs-text-primary);
+        font-size: 0.95rem;
+        transition: all var(--vs-transition) ease;
+      }
+
+      .vs-search-input:focus {
+        border-color: var(--vs-accent);
+        box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2);
+      }
+
+      .vs-search-btn {
+        top: 9px;
+        left: 14rem;
+        position: absolute;
+        background: none;
+        border: none;
+        color: #888;
+        cursor: pointer;
+        font-size: 1.1rem;
+        transition: color var(--vs-transition) ease;
+      }
+
+      .vs-search-btn:hover {
+        color: var(--vs-accent);
+      }
+
+      /* Right Side Navigation */
+      .vs-right {
+        display: flex;
+        align-items: center;
+        gap: 1.8rem;
+      }
+
+      .vs-nav-item {
+        text-decoration: none;
+        color: var(--vs-text-primary);
+        font-weight: 600;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all var(--vs-transition) ease;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      .vs-nav-item:hover {
+        color: var(--vs-accent);
+        transform: translateY(-2px);
+      }
+
+      .vs-nav-item i {
+        font-size: 1.2rem;
+      }
+
+      /* Search Toggle Button */
+      .vs-search-toggle {
+        background: none;
+        border: none;
+        color: var(--vs-text-primary);
+        cursor: pointer;
+        font-size: 1.2rem;
+        padding: 0.5rem;
+        transition: all var(--vs-transition) ease;
+        display: none;
+      }
+
+      .vs-search-toggle:hover {
+        color: var(--vs-accent);
+        transform: scale(1.1);
+      }
+
+      /* User Dropdown */
+      .vs-user-dropdown {
+        position: fixed;
+        top: var(--vs-height);
+        right: 0;
+        width: 300px;
+        height: calc(100vh - var(--vs-height));
+        background-color: var(--vs-bg-primary);
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+        padding: 1.5rem;
+        overflow-y: auto;
+        transform: translateX(100%);
+        transition: transform var(--vs-transition) ease;
+        z-index: 10000;
+        display: none;
+      }
+
+      .vs-user-dropdown.active {
+        transform: translateX(0);
+        display: block;
+      }
+
+      .vs-close-icon {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        cursor: pointer;
+        font-size: 1.4rem;
+        transition: color var(--vs-transition) ease;
+      }
+
+      .vs-close-icon:hover {
+        color: var(--vs-accent);
+      }
+
+      .vs-user-info {
+        margin-top: 1rem;
+      }
+
+      .vs-uploader-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .vs-user-img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 1.2rem;
+        border: 2px solid var(--vs-accent);
+      }
+
+      .vs-username {
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+      }
+
+      .vs-user-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        width: 100%;
+        margin-bottom: 1.5rem;
+      }
+
+      .vs-user-stats div {
+        background-color: var(--vs-bg-secondary);
+        padding: 0.8rem;
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .vs-user-stats h4 {
+        font-weight: 500;
+        font-size: 0.95rem;
+      }
+
+      .vs-logout-btn {
+        display: block;
+        padding: 0.8rem;
+        background-color: var(--vs-accent);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background-color var(--vs-transition) ease;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-align: center;
+      }
+
+      .vs-logout-btn:hover {
+        background-color: var(--vs-hover);
+      }
+
+      /* Mobile Navigation */
+      .vs-mobile-nav {
+        display: none;
+        align-items: center;
+        gap: 1.2rem;
+      }
+
+      .vs-mobile-nav a {
+        color: var(--vs-text-primary);
+        font-size: 1.2rem;
+        text-decoration: none;
+      }
+
+      .vs-hamburger {
+        cursor: pointer;
+        font-size: 1.4rem;
+        transition: color var(--vs-transition) ease;
+      }
+
+      .vs-hamburger:hover {
+        color: var(--vs-accent);
+      }
+
+      /* Mobile Sidebar */
+      .vs-mobile-sidebar {
+        position: fixed;
+        top: var(--vs-height);
+        right: 0;
+        width: 280px;
+        height: calc(100vh - var(--vs-height));
+        background-color: var(--vs-bg-primary);
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+        padding: 1.5rem;
+        overflow-y: auto;
+        transform: translateX(100%);
+        transition: transform var(--vs-transition) ease;
+        z-index: 10000;
+        display: none;
+      }
+
+      .vs-mobile-sidebar.active {
+        transform: translateX(0);
+        display: block;
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 992px) {
+        .vs-container {
+          gap: 1rem;
+        }
+
+        .vs-right {
+          gap: 1.2rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .vs-search-container {
+          position: absolute;
+          left: 0;
+          top: var(--vs-height);
+          width: 100%;
+          padding: 0.8rem 1rem;
+          background-color: var(--vs-bg-primary);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          z-index: 9998;
+          display: none;
+        }
+
+        .vs-search-container.active {
+          display: flex;
+        }
+
+        .vs-search-toggle {
+          display: block;
+        }
+
+        .vs-right .vs-nav-text {
+          display: none;
+        }
+
+        .vs-right {
+          gap: 1.2rem;
+        }
+
+        .vs-mobile-nav {
+          display: flex;
+        }
+        .vs-search-btn {
+          top: 1.2rem;
+          left: 15rem;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .vs-right {
+          gap: 1rem;
+        }
+
+        .vs-mobile-nav {
+          gap: 1rem;
+        }
+
+        .vs-user-dropdown,
+        .vs-mobile-sidebar {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="vs-header">
+      <nav class="vs-navbar">
+        <div class="vs-container">
+          <div class="vs-left">
+            <a class="vs-logo" style="font-weight: bolder">ProjectX</a>
+          </div>
+          <div class="vs-search-container">
+            <form action="/search" method="get">
+              <input
+                class="vs-search-input search-input"
+                type="search"
+                name="query"
+                required
+                placeholder="Search Videos..."
+              />
+              <div id="resultsfrinput" style="display: none"></div>
+              <button type="submit" class="vs-search-btn btn-search-input">
+                <i class="fas fa-search"></i>
+              </button>
+            </form>
+          </div>
+          <div class="vs-right">
+            <a href="/" class="vs-nav-item"
+              ><i class="fas fa-home"></i
+              ><span class="vs-nav-text">Home</span></a
+            >
+            <a href="/newvideo" class="vs-nav-item"
+              ><i class="fas fa-file-video"></i
+              ><span class="vs-nav-text">Upload</span></a
+            >
+
+            <!-- Simulate logged in user -->
+            <a class="vs-nav-item vs-user-icon" onclick="toggleProfile()">
+              <i class="fas fa-user"></i>
+            </a>
+
+            <button
+              class="vs-search-toggle"
+              type="button"
+              onclick="toggleSearch()"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+
+            <div class="vs-user-dropdown">
+              <span>
+                <i
+                  class="fas fa-xmark vs-close-icon"
+                  onclick="toggleProfile()"
+                ></i>
+              </span>
+              <div class="vs-user-info">
+                <div class="vs-uploader-info">
+                  <img
+                    class="vs-user-img"
+                    src="https://as1.ftcdn.net/v2/jpg/05/16/27/58/1000_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
+                    alt="user profile"
+                  />
+                  <h2 class="vs-username"><strong>Anonymous01</strong></h2>
+                  <div class="vs-user-stats">
+                    <div><h4>Likes: 1.2K</h4></div>
+                    <div><h4>Subscribers: 543</h4></div>
+                    <div><h4>Playlists: 12</h4></div>
+                    <div><h4>Videos: 37</h4></div>
+                  </div>
+                  <a href="/logout" class="vs-logout-btn">LOGOUT</a>
                 </div>
-             <% if(currUser)
-              {%>
-                <div class="logout">
-                  <h4><a href="/logout" class="navbar-brand">LOGOUT</a></h4>
-                </div>
-                <%}%> 
               </div>
-
-              <!-- //add other -->
             </div>
           </div>
-        </main>
-        <button class="btn-search" type="submit">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-      </div>
-      <!-- mobile header below -->
-      
-      <div class="rightsidesMOB" style="display: none">
-        <%if(!currUser) {%>
-          <a href="/signup" class="navbar-brand">
-          <i class="fa-solid fa-user"></i>
+        </div>
+      </nav>
+    </header>
 
-          </a>
-          <%}%>
-        <a href="/newvideo" class="navbar-brand"><i class="fa-solid fa-file-video"></i></a>
-        <i class="fa-solid fa-bars"> </i>
-
-        
+    <!-- Mobile sidebar -->
+    <div class="vs-mobile-sidebar">
+      <span>
+        <i class="fas fa-xmark vs-close-icon" onclick="toggleSidebar()"></i>
+      </span>
+      <div class="vs-user-info">
+        <div class="vs-uploader-info">
+          <img
+            class="vs-user-img"
+            src="https://as1.ftcdn.net/v2/jpg/05/16/27/58/1000_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
+            alt="user profile"
+          />
+          <h2 class="vs-username"><strong>Anonymous01</strong></h2>
+          <div class="vs-user-stats">
+            <div><h4>Likes: 1.2K</h4></div>
+            <div><h4>Subscribers: 543</h4></div>
+            <div><h4>Playlists: 12</h4></div>
+            <div><h4>Videos: 37</h4></div>
+          </div>
+          <a href="/logout" class="vs-logout-btn">LOGOUT</a>
+        </div>
       </div>
     </div>
-  </nav>
-  <!-- fr mobile  -->
-  <main class="main-sideBar" style="display: none">
-    <span>
-      <i class="fa-solid fa-xmark fa-xmarkfrsidebar"></i>
-    </span>
-  <div class="userInfo">
-            <div class="uploader">
-              <div class="uploader-info">
-                <img
-                  src="https://as1.ftcdn.net/v2/jpg/05/16/27/58/1000_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
-                  alt="anonymous.jpg"
-                />
-                <h2><strong>Anonymous01</strong></h2>
-                <div class="datauser">
-                  <div><h4>like:</h4></div>
-                  <div><h4>Subscriber:</h4></div>
-                  <div><h4>playlist:</h4></div>
-                  <div><h4>content:</h4></div>
-                  <% if(currUser) {%>
-                    <div class="logout">
-                      <h4><a href="/logout" class="navbar-brand">LOGOUT</a></h4>
-                      <% }%>
-                </div>
-                </div>
 
-              </div>
-  </main>
-</body>
+    <script>
+      // Toggle profile dropdown
+      function toggleProfile() {
+        const userIcon = document.querySelector(".vs-user-dropdown");
+        userIcon.classList.toggle("active");
+      }
 
-<script>
-  const profile = async () => {
-    const userIcon = document.querySelector(".main-userIcon");
-    userIcon.style.display =
-      userIcon.style.display === "none" ? "block" : "none";
-  };
-</script>
+      // Toggle mobile sidebar
+      function toggleSidebar() {
+        const sidebar = document.querySelector(".vs-mobile-sidebar");
+        sidebar.classList.toggle("active");
+      }
+
+      // Toggle search bar on mobile
+      function toggleSearch() {
+        const searchContainer = document.querySelector(".vs-search-container");
+        searchContainer.classList.toggle("active");
+      }
+
+      // Close dropdowns when clicking outside
+      document.addEventListener("click", function (event) {
+        const profile = document.querySelector(".vs-user-dropdown");
+        const sidebar = document.querySelector(".vs-mobile-sidebar");
+        const searchContainer = document.querySelector(".vs-search-container");
+
+        if (
+          profile.classList.contains("active") &&
+          !event.target.closest(".vs-user-icon") &&
+          !event.target.closest(".vs-user-dropdown")
+        ) {
+          profile.classList.remove("active");
+        }
+
+        if (
+          sidebar.classList.contains("active") &&
+          !event.target.closest(".vs-hamburger") &&
+          !event.target.closest(".vs-mobile-sidebar")
+        ) {
+          sidebar.classList.remove("active");
+        }
+
+        if (
+          searchContainer.classList.contains("active") &&
+          !event.target.closest(".vs-search-toggle") &&
+          !event.target.closest(".vs-search-container")
+        ) {
+          searchContainer.classList.remove("active");
+        }
+      });
+    </script>
+  </body>
+</html>

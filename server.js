@@ -170,7 +170,7 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
 
     await newvid.save();
     req.flash("success", "Video Uploaded ⭐");
-    fs.unlinkSync(inputPath);
+    fs.unlinkSync(uploads);
     fs.unlinkSync(outputPath);
     fs.unlinkSync(thumbPath);
     res.redirect("/");
@@ -265,6 +265,11 @@ app.get("/", async (req, res) => {
   const skip = (page - 1) * limit;
   const total = await VideoDatas.countDocuments({});
   const totalPages = Math.ceil(total / limit);
+  if (page > totalPages) {
+    res.render("err.ejs", { message: "Page Not Found" });
+    return;
+  }
+
   const data = await VideoDatas.find({})
     .sort({ createdAt: -1 })
     .skip(skip)
@@ -297,7 +302,7 @@ app.get("/search/live", async (req, res) => {
   try {
     const results = await VideoDatas.find({
       $or: regexes.flatMap((rgx) => [{ title: rgx }, { description: rgx }]),
-    }).limit(12);
+    }).limit(6);
 
     res.json(results);
   } catch (err) {
@@ -314,6 +319,10 @@ app.get(
     res.render("show.ejs", { vid });
   })
 );
+app.use((req, res, next) => {
+  res.render("err.ejs", { message: "page not found" });
+  next();
+});
 //serverXdb
 app.listen(port, () => {
   console.log("server on at https://localhost:3030");

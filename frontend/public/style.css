@@ -8,189 +8,33 @@
   --bgcolor: #191a1b;
   --fgcolor: white;
 }
-.input {
-  border: none;
-  outline: none;
-  background: transparent;
-}
+
 body {
   min-height: 100vh;
   width: 100vw;
   background-color: var(--bgcolor);
   margin: 0;
   padding: 0;
+  margin-top: 5rem;
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
-header {
-  position: relative;
-  inset: 0 0 0 0;
-  width: 100vw;
-  height: 60px;
-  color: var(--fgcolor);
-  z-index: 9999;
-  padding: 0rem 6rem;
-  white-space: nowrap;
-  margin-bottom: 1rem;
-}
-
-.container-fluid {
-  display: flex;
-  justify-content: space-between;
-  gap: 3rem;
-  cursor: pointer;
-}
-
-.container-fluid .rightsides {
-  display: flex;
-  gap: 2.5rem;
-  text-transform: uppercase;
-  font-weight: bolder;
-}
-
-.container-fluid .rightsides a,
-.container-fluid .leftsides a {
-  color: var(--fgcolor);
-}
-.container-fluid .rightsides a:hover {
-  transform: translateY(3px);
-  color: cornsilk;
-}
-
-.btn-search::before {
-  content: "";
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  background-color: transparent;
-  position: absolute;
-  right: 1px;
-  top: 8px;
-  /* background-image: conic-gradient(blue, red); */
-  display: block;
-  z-index: -1;
-}
-
-.btn-search {
-  color: white;
-  border: none;
-  outline: none;
-  background: transparent;
-}
-.btn-search :hover {
-  transition: all ease-in 300ms;
-  transform: translateY(-2px);
-}
-.search-input:focus {
-  color: var(--fgcolor);
-  background-color: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
-}
-.main-userIcon {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: -4px 0px 20px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  position: absolute;
-  width: 25vw;
-  right: -6rem;
-  top: -2rem;
-  min-height: 100vh;
-  .fa-xmark {
-    position: absolute;
-    right: 1rem;
-    top: 0.5rem;
-    color: var(--fgcolor);
-    font-size: 2.5rem;
-  }
-}
-.main-userIcon span i {
-  z-index: 100;
-}
-
-.main-userIcon .uploader {
-  width: 100vw;
-}
-.main-userIcon .uploader .uploader-info {
-  width: 100%;
-  position: absolute;
-  inset: 0;
-  margin-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.main-userIcon .uploader .uploader-info img {
-  max-width: 100%;
-  width: 79px;
-  border-radius: 50%;
-}
-.main-userIcon .uploader .uploader-info h2 {
-  font-size: small;
-}
-.main-userIcon .uploader-info .datauser {
-  position: absolute;
-  left: 0;
-  top: 8rem;
-}
-.main-userIcon .uploader-info .datauser div {
-  width: 100vw;
-  min-width: 10vw;
-  min-height: 3rem;
-  height: 3rem;
-  padding: 0 1rem;
-  margin: 3rem 0 2rem 0;
-  color: beige;
-  font-family: monospace;
-  box-shadow: -4px 0px 13px rgba(0, 0, 0, 0.3);
-  border-radius: 0.5rem;
-  display: flex;
-  align-items: center;
-}
-.main-userIcon .uploader-info .logout {
-  font-family: monospace;
-  box-shadow: inset -10px 0 20px rgba(255, 255, 255, 0.5);
-  padding: 0rem 5rem;
-  border-radius: 1.5em;
-}
-.main-userIcon .uploader-info .logout a {
-  color: beige;
-}
 /* home.ejs  search.ejs */
-.search-input {
-  position: absolute;
-  inset: 0;
-  left: 20rem;
-  width: 25vw;
-  padding: 0.8rem;
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  border-radius: 12px;
-  background-color: rgba(255, 255, 255, 0.05);
-  color: white;
-  /* box-shadow: 0 0 8px rgba(0, 255, 255, 0.3); */
-}
 
 /* css for /video/live/search */
 #resultsfrinput {
-  position: absolute;
-  left: 20rem;
-  top: 3.9rem;
-  display: none;
-  width: 25vw;
-  max-height: 60vh;
-  overflow-y: auto;
-  border-radius: 16px;
-  background-color: rgba(30, 30, 30, 0.95);
-  color: white;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(6px);
-  z-index: 999;
-  padding: 0.3rem 0;
-  transition: all 0.3s ease-in-out;
-  scrollbar-width: thin;
-  scrollbar-color: #888 transparent;
+  border: 1px solid red;
+  border-radius: 30px;
+  outline: none;
+  backdrop-filter: blur(16px);
+  background-color: rgba(0, 0, 0, 0.9);
+  color: var(--vs-text-primary);
+  transition: all var(--vs-transition) ease;
+  padding: 1rem 1.2rem;
+  position: fixed;
+  width: 451px;
+  margin-left: -2rem;
 }
 
 /* Custom Scrollbar for Webkit (Chrome, Edge) */
@@ -328,17 +172,6 @@ header {
 }
 /*  pagination */
 
-.prompt {
-  margin-left: 2rem;
-  color: aliceblue;
-}
-
-.resultiszero {
-  height: 100vh;
-  font-size: 3rem;
-  color: white;
-  margin: 3rem 0 0 2rem;
-}
 .container {
   display: flex;
   flex-wrap: wrap;
@@ -391,6 +224,19 @@ a {
   font-size: 0.95rem;
   color: #666;
 }
+
+/* result 0 */
+.resultiszero {
+  height: 100vh;
+  font-size: 3rem;
+  color: white;
+  margin: 3rem 0 0 2rem;
+}
+.prompt {
+  margin-left: 2rem;
+  color: aliceblue;
+}
+
 @media (max-width: 768px) {
   body {
     touch-action: manipulation;
@@ -405,104 +251,5 @@ a {
   .pagination {
     height: 3rem;
     padding: 0 0.7em 0 0.7em;
-  }
-  header {
-    padding: 0 4rem 0 0;
-    .search-input {
-      right: 3.3rem;
-      width: 8rem;
-    }
-    .btn-search {
-      color: var(--fgcolor);
-    }
-    .container-fluid .rightsides {
-      display: none;
-    }
-    .container-fluid .rightsidesMOB {
-      display: block !important;
-      font-size: 1.2rem;
-    }
-    .container-fluid .rightsidesMOB i {
-      color: var(--fgcolor);
-      cursor: pointer;
-    }
-    .main-sideBar {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: -4px 0px 20px rgba(0, 0, 0, 0.3);
-      cursor: pointer;
-      position: absolute;
-      right: 0;
-      top: 0;
-      width: 65vw;
-      min-height: 100vh;
-      .fa-xmark {
-        position: absolute;
-        right: 1rem;
-        top: 0.4rem;
-        color: var(--fgcolor);
-        font-size: 1.5rem;
-      }
-      overflow: hidden;
-    }
-    .main-sideBar .uploader {
-      width: 100vw;
-    }
-    .main-sideBar .uploader .uploader-info {
-      width: 100%;
-      position: absolute;
-      inset: 0;
-      margin-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .main-sideBar .uploader-info .datauser {
-      position: absolute;
-      left: 0;
-      top: 4rem;
-    }
-    .main-sideBar .uploader-info img {
-      max-width: 3rem;
-      border-radius: 50%;
-    }
-    .main-sideBar .uploader-info .datauser div {
-      width: 55vw;
-      min-width: 2vw;
-      min-height: 3rem;
-      padding: 0 1rem;
-      color: beige;
-      font-family: monospace;
-      box-shadow: -4px 0px 13px rgba(0, 0, 0, 0.3);
-      border-radius: 0.5rem;
-      display: flex;
-      align-items: center;
-      margin-top: 1.5rem;
-    }
-    .uploader-info .datauser div h4 {
-      font-size: 0.7rem;
-    }
-    .main-sideBar .uploader-info .logout {
-      font-family: monospace;
-      box-shadow: inset -10px 0 20px rgba(255, 255, 255, 0.5);
-      padding: 0 5rem;
-      border-radius: 50%;
-      width: 10vw;
-      left: 1rem;
-      display: flex;
-      margin: 0 auto;
-      position: absolute;
-      align-items: center;
-      justify-content: center;
-    }
-    .main-sideBar .uploader-info .logout a {
-      color: black;
-      border-radius: 50%;
-    }
-    .fa-solid {
-      font-size: smaller;
-    }
   }
 }
