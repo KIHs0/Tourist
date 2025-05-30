@@ -21,6 +21,7 @@ const port = 3030;
 const wrapasync = require("./backend/utils.js/wrapasync.js");
 const ErrorExpress = require("./backend/utils.js/error.js");
 const { cloudinary } = require("./backend/cloudconfig.js");
+const { title } = require("process");
 const uploads = path.join(__dirname, "uploads");
 const thumbnail = path.join(__dirname, "thumbnail");
 const cup = path.join(__dirname, "cup");
@@ -261,7 +262,6 @@ app.use((req, res, next) => {
 //index Route and home.ejs
 
 app.get("/", async (req, res) => {
-  // console.log(req.user);
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
   const skip = (page - 1) * limit;
@@ -321,7 +321,20 @@ app.get(
     res.render("show.ejs", { vid });
   })
 );
+app.get(
+  "/video/caterogie/:tags",
+  wrapasync(async (req, res) => {
+    let query = decodeURIComponent(req.params.tags);
+
+    const regex = new RegExp(query, "i");
+    const results = await VideoDatas.find({ "video.tags": regex });
+    if (!results) return;
+
+    res.render("categories.ejs", { results, query });
+  })
+);
 app.use((req, res, next) => {
+  console.log("middleware running");
   res.render("err.ejs", { message: "page not found" });
   next();
 });

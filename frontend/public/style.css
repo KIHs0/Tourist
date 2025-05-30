@@ -24,7 +24,6 @@ body {
 
 /* css for /video/live/search */
 #resultsfrinput {
-  border: 1px solid red;
   border-radius: 30px;
   outline: none;
   backdrop-filter: blur(16px);
@@ -34,7 +33,7 @@ body {
   padding: 1rem 1.2rem;
   position: fixed;
   width: 451px;
-  margin-left: -2rem;
+  margin-left: -6rem;
 }
 
 /* Custom Scrollbar for Webkit (Chrome, Edge) */
@@ -147,9 +146,9 @@ body {
   width: 6px;
   height: 6px;
   background: cyan;
-
   border-radius: 50%;
   opacity: 0.6;
+  display: none;
   transition: all 0.3s ease-in-out;
 }
 
@@ -166,6 +165,7 @@ body {
 .pagination a:hover span::before,
 .pagination a:hover span::after {
   opacity: 1;
+  display: block;
   width: 10px;
   height: 10px;
   background: cyan;
@@ -234,15 +234,54 @@ a {
 }
 .prompt {
   margin-left: 2rem;
-  color: aliceblue;
+  color: gray;
+  font-weight: bolder;
+  font-size: 2rem;
+  text-transform: capitalize;
+  font-family: monospace;
+}
+.home-btn {
+  display: inline-block;
+  padding: 0.75rem 3.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 12px;
+  text-decoration: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.home-btn:hover,
+.home-btn:focus {
+  background-color: red;
+  color: black;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 500px) {
+  .home-btn {
+    font-size: 0.95rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+  }
 }
 
 @media (max-width: 768px) {
+  .prompt {
+    font-size: 1rem;
+  }
   body {
     touch-action: manipulation;
     overflow-x: hidden;
     overflow-y: auto;
-    padding: 0.5rem 2rem;
+    padding: 1.5rem 2rem;
   }
 
   .pagination i {
@@ -251,5 +290,8 @@ a {
   .pagination {
     height: 3rem;
     padding: 0 0.7em 0 0.7em;
+  }
+  #resultsfrinput {
+    margin-left: -1rem;
   }
 }

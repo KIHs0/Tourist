@@ -1,9 +1,12 @@
 <%layout("../layout/plate.ejs")%>
 
-<h2 class="prompt">Categorized by "<%= query %>"</h2>
+<h2 class="prompt">Categorized By "<%= query %>"</h2>
 
 <% if (results.length === 0) { %>
-<h2 class="resultiszero">No videos found.</h2>
+<a href="/" class="home-btn">🏠 Go to Homepage</a>
+
+  <h2 class="resultiszero">No videos found.</h2>
+
 <% } else { %>
     <div class="container">
   <% results.forEach(data => { %>
@@ -29,6 +32,6 @@
       </a>
     </div>
     <% }) %>
-    <%}%>z`
+    <%}%>
 </div>
 </div>

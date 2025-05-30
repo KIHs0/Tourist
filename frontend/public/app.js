@@ -30,10 +30,18 @@ const resultsDiv = document.getElementById("resultsfrinput");
 //   mainuserIcon.style.display =
 //     mainuserIcon.style.display == "none" ? "block" : "none";
 // });
+const containerSelect = document.querySelector(".containerSidebar select");
+containerSelect.addEventListener("change", () => {
+  const url = containerSelect.value;
+  console.log(url);
+  if (url) {
+    window.location.href = url;
+  }
+});
+document.addEventListener("click", () => {
+  resultsDiv.style.display = "none";
+});
 searchInput.addEventListener("keydown", async (e) => {
-  // resultsDiv.style.display =
-  //   resultsDiv.style.display == "none" ? "block" : "none";
-
   resultsDiv.style.display = "block";
   console.log("35");
   const query = e.target.value;

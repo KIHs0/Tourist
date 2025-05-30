@@ -1,0 +1,50 @@
+<body>
+  <style>
+    .containerSidebar {
+      z-index: 10;
+      position: fixed;
+      left: 0;
+      top: 4rem;
+      display: flex;
+      gap: 3rem;
+      flex-direction: column;
+    }
+    .containerSidebar select {
+      font-weight: bold;
+      border: none;
+      position: absolute;
+      background: #333;
+      border-radius: 30px;
+      outline: none;
+      cursor: pointer;
+      left: 1rem;
+    }
+    option {
+      color: black;
+    }
+
+    @media (max-width: 769px) {
+      .containerSidebar select {
+        font-size: 0.7rem;
+        text-transform: capitalize;
+      }
+    }
+  </style>
+  <div class="containerSidebar">
+    <div>
+      <select name="" id="categorydropdown">
+        <option value=""></option>
+        <option value="/video/caterogie/new">new</option>
+        <option value="/video/caterogie/nepali">nepali</option>
+        <option value="/video/caterogie/new%20video">new video</option>
+        <option value="/video/caterogie/xxx">xxx</option>
+        <option value="/video/caterogie/trending">trending</option>
+        <option value="/video/caterogie/kanda">Kanda</option>
+        <option value="/video/caterogie/desi">desi</option>
+        <option value="/video/caterogie/school">school</option>
+        <option value="/video/caterogie/firsttime">first time</option>
+        <option value="/video/caterogie/virgin">virgin</option>
+      </select>
+    </div>
+  </div>
+</body>

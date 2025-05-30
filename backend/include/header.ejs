@@ -86,8 +86,8 @@
       }
 
       .vs-search-input:focus {
-        border-color: var(--vs-accent);
-        box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2);
+        /* border-color: var(--vs-accent); */
+        box-shadow: 0 0 0 2px rgba(17, 27, 28, 0.2);
       }
 
       .vs-search-btn {
@@ -104,6 +104,7 @@
 
       .vs-search-btn:hover {
         color: var(--vs-accent);
+        transition: color var(--vs-transition) ease;
       }
 
       /* Right Side Navigation */
@@ -309,12 +310,13 @@
       @media (max-width: 768px) {
         .vs-search-container {
           position: absolute;
-          left: 0;
-          top: var(--vs-height);
-          width: 100%;
+          inset: 0 0 0 0;
+          left: -2rem;
+          /* top: var(--vs-height); */
+          width: fit-content;
           padding: 0.8rem 1rem;
-          background-color: var(--vs-bg-primary);
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          /* background-color: var(--vs-bg-primary); */
+          /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
           z-index: 9998;
           display: none;
         }
