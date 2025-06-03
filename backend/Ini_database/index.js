@@ -8,7 +8,7 @@ const initdb = async function () {
   const newdata = data.map(({ tags, ...rest }) => rest);
   newdata.map(({ video, ...rest }) => {
     video.owner = "Anonymous01";
-    video.tags = ["new video", "admin", "xxx"];
+    video.tags = ["new video"];
   });
   await VideoData.insertMany(newdata);
 };
