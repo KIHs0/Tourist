@@ -88,7 +88,7 @@ app.use(flash());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-// new video Route
+// new video Route and compression of video using ffmpeg
 app.get("/newvideo", (req, res) => res.render("add.ejs"));
 app.post("/newvideo", upload.single("video"), async (req, res, next) => {
   const inputPath = req.file.path;
@@ -115,7 +115,7 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
           try {
             console.log("compressfinished");
 
-            ffmpeg(outputPath)
+            ffmpeg(inputPath)
               .screenshots({
                 count: 1,
                 folder: path.dirname(thumbPath),
@@ -184,7 +184,6 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
   }
 });
 // signup Route
-
 app.get("/signup", (req, res) => {
   res.render("signup.ejs");
 });
@@ -208,7 +207,6 @@ app.post("/signup", async (req, res) => {
   });
 });
 // login route
-
 app.get("/login", (req, res) => {
   res.render("login");
 });
@@ -231,7 +229,6 @@ app.post(
   }
 );
 //logout Route
-
 app.get("/logout", (req, res) => {
   req.logout((err) => {
     if (err) {
@@ -242,17 +239,8 @@ app.get("/logout", (req, res) => {
     res.redirect("/");
   });
 });
-// main middleware
 
-app.use((err, req, res, next) => {
-  console.log("middele ware runninx");
-  console.error(err.message);
-  req.flash("error", err.message);
-  // res.status(500).json({ success: false, error: err.message });
-  next();
-});
 //locals middleware
-
 app.use((req, res, next) => {
   res.locals.successMsg = req.flash("success");
   res.locals.errorMsg = req.flash("error");
@@ -260,7 +248,6 @@ app.use((req, res, next) => {
   next();
 });
 //index Route and home.ejs
-
 app.get("/", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
@@ -276,10 +263,12 @@ app.get("/", async (req, res) => {
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
+  // res.json({
+  //   vurl: "http://localhost:3030/video/05_20250327_235957__comp.mp4",
+  // });
   res.render("home.ejs", { data, totalPages, currentPage: page });
 });
 //search Route and search.ejs
-
 app.get("/search", async (req, res) => {
   const query = req.query.query;
   if (!query) return res.render("search", { result: [] });
@@ -321,8 +310,9 @@ app.get(
     res.render("show.ejs", { vid });
   })
 );
+// categories route and cateogires.ejs
 app.get(
-  "/video/caterogie/:tags",
+  "/video/categories/:tags",
   wrapasync(async (req, res) => {
     let query = decodeURIComponent(req.params.tags);
 
@@ -333,11 +323,12 @@ app.get(
     res.render("categories.ejs", { results, query });
   })
 );
-app.use((req, res, next) => {
-  console.log("middleware running");
-  res.render("err.ejs", { message: "page not found" });
+// main middleware
+app.use((err, req, res, next) => {
+  req.flash("error", err.message);
   next();
 });
+
 //serverXdb
 app.listen(port, () => {
   console.log("server on at https://localhost:3030");
