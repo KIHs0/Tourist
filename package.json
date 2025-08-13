@@ -15,7 +15,7 @@
     "cloudinary": "^1.41.3",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.7",
-    "dotenv": "^16.5.0",
+    "dotenv": "^16.6.1",
     "ejs": "^3.1.10",
     "ejs-mate": "^4.0.0",
     "express": "^5.1.0",
@@ -33,6 +33,7 @@
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^8.0.0",
     "path": "^0.12.7",
+    "promisify-child-process": "^4.1.2",
     "serve-favicon": "^2.5.0"
   }
 }

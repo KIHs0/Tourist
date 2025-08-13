@@ -48,10 +48,11 @@ searchInput.addEventListener("keydown", async (e) => {
   if (!query) {
     return;
   }
-  const res = await fetch(`/search/live?query=${encodeURIComponent(query)}`);
-
-  const data = await res.json();
-  rendervideoLive(data);
+  setTimeout(async () => {
+    const res = await fetch(`/search/live?query=${encodeURIComponent(query)}`);
+    const data = await res.json();
+    rendervideoLive(data);
+  }, 3000);
 });
 const rendervideoLive = (videos) => {
   if (videos.length == 0) {

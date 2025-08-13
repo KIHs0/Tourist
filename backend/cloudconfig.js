@@ -11,7 +11,6 @@ const storage = new CloudinaryStorage({
   params: async (req, file) => ({
     folder: "ProjectX",
     resource_type: "video",
-
     format: "mp4", // supports promises as well
     public_id: `${file.originalname.split(".")[0]}_${Date.now()}`,
   }),

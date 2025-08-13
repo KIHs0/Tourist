@@ -6,6 +6,7 @@
     min-height: 100vh;
     margin: 0 auto;
     position: relative;
+    touch-action: manipulation;
   }
   .videoContent {
     /* border: 2px solid red; */
@@ -20,7 +21,7 @@
     position: absolute;
     height: 100%;
     width: 100%;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 9px;
   }
   .videoInfo {
@@ -80,6 +81,9 @@
   }
 
   @media (max-width: 768px) {
+    .vidContainer {
+      margin: -3.5rem auto;
+    }
     .videoInfo {
       font-family: Verdana, Geneva, Tahoma, sans-serif;
       padding: 0;
@@ -108,9 +112,19 @@
 <body>
   <div class="vidContainer">
     <div class="videoContent">
-      <video controls>
+      <!-- <video controls>
         <source src="<%=vid.video.url%>" type="video/mp4" />
-      </video>
+      </video> -->
+      <video
+        autoplay
+        id="video-<%= vid._id %>"
+        width="960"
+        height="540"
+        controls
+        loop
+        playsinline
+        autoplay
+      ></video>
       <div class="videoInfo">
         <span><h3><%=vid.title%></h3></span>
         <span><h3><%=vid.description%></h3></span>
@@ -133,3 +147,18 @@
     </div>
   </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script>
+  (function () {
+    const video = document.getElementById("video-<%= vid._id %>");
+    const src = "<%= vid.video.url %>";
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(src);
+      hls.attachMedia(video);
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = src; // Safari
+    }
+  })();
+</script>

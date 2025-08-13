@@ -2,22 +2,26 @@
   <style>
     .containerSidebar {
       z-index: 10;
-      position: fixed;
+      position: static;
       left: 0;
       top: 4rem;
       display: flex;
       gap: 3rem;
       flex-direction: column;
+      padding: 0.8em 0;
+      touch-action: manipulation;
+      margin-bottom: 1rem;
     }
     .containerSidebar select {
       font-weight: bold;
       border: none;
+      padding: 0.4em;
       position: absolute;
       background: #333;
       border-radius: 30px;
       outline: none;
       cursor: pointer;
-      left: 1rem;
+      /* color: whitesmoke; */
     }
     option {
       color: black;
@@ -25,7 +29,7 @@
 
     @media (max-width: 769px) {
       .containerSidebar select {
-        font-size: 0.7rem;
+        font-size: 0.6rem;
         text-transform: capitalize;
       }
     }
@@ -33,12 +37,14 @@
   <div class="containerSidebar">
     <div>
       <select name="" id="categorydropdown">
-        <option value="/video/categories/tags">Category</option>
-        <option value="/video/categories/tags">new</option>
-        <option value="/video/categories/tags">new</option>
-        <option value="/video/categories/tags">new</option>
-        <option value="/video/categories/tags">new</option>
-        <option value="/video/categories/tags">new</option>
+        <!-- <option value="/video/categories/tags">Category</option> -->
+
+        <option value="/video/categories/categries">Category</option>
+        <option value="/video/categories/kanda">kanda</option>
+        <option value="/video/categories/nepali">nepali</option>
+        <option value="/video/categories/indian">Indian</option>
+        <option value="/video/categories/teen">teen</option>
+        <option value="/video/categories/vagina">vagina</option>
       </select>
     </div>
   </div>

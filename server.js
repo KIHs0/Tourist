@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const VideoDatas = require("./backend/models/video");
-const mongoUrl = "mongodb://127.0.0.1:27017/VideoData";
+const mongoUrl = process.env.MONGO_URL;
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const engine = require("ejs-mate");
@@ -25,6 +25,7 @@ const { title } = require("process");
 const uploads = path.join(__dirname, "uploads");
 const thumbnail = path.join(__dirname, "thumbnail");
 const cup = path.join(__dirname, "cup");
+const { exec, spawn, fork, execFile } = require("child_process");
 // file making
 
 if (!fs.existsSync(uploads)) {
@@ -64,6 +65,8 @@ app.use("/thumbnail", express.static(path.join(__dirname, "thumbnail")));
 app.use(express.static(path.join(__dirname, "frontend", "public")));
 app.use(favicon(path.join(__dirname, "backend", "favicon", "favicon.ico")));
 app.use(express.urlencoded({ extended: true }));
+app.use("/hls", express.static(path.join(__dirname, "hls")));
+app.use("/thumbnail", express.static(path.join(__dirname, "thumbnail")));
 app.use(express.json());
 app.set("views", path.join(__dirname, "./backend/views"));
 app.set("view engine", "ejs");
@@ -100,6 +103,25 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
     thumbnail,
     `${originalname}_compressedthumbnail.jpg`
   );
+  function convertToHLS(inputPath, outputFolder, videoName) {
+    return new Promise((resolve, reject) => {
+      const outDir = path.join(outputFolder, videoName);
+      fs.mkdirSync(outDir, { recursive: true });
+
+      const cmd = `${ffmpegPath} -i "${inputPath}" -c:v libx264 -preset veryfast -crf 21 -c:a aac -b:a 128k -ac 2 -hls_time 6 -hls_playlist_type vod -hls_flags independent_segments -hls_segment_filename "${outDir}/seg_%03d.ts" "${outDir}/index.m3u8"`;
+
+      exec(cmd, (error) => {
+        console.log("hi");
+        if (error) {
+          console.log(error);
+          return reject(error);
+        }
+        console.log(error);
+        resolve({ m3u8Path: `${outDir}/index.m3u8` });
+      });
+    });
+  }
+
   function ffmpegfx(inputPath, outputPath) {
     return new Promise((resolve, reject) => {
       ffmpeg(inputPath)
@@ -148,37 +170,62 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
   try {
     console.log("fcx called");
     await ffmpegfx(inputPath, outputPath);
+    const result0 = await convertToHLS(outputPath, "hls/videos", originalname);
+    console.log(result0.m3u8Path);
 
-    const result = await cloudinary.uploader.upload(outputPath, {
-      folder: "ProjectX",
-      resource_type: "video",
-      format: "mp4",
-      public_id: `${originalname}_${timeStamp}`, // same logic as in your CloudinaryStorage config
-    });
-    const result2 = await cloudinary.uploader.upload(thumbPath, {
-      folder: "ProjectX",
-      resource_type: "image",
-      format: "jpg",
-      public_id: `${originalname}_${timeStamp}_thumb`,
-    });
+    // const result = await cloudinary.uploader.upload(outputPath, {
+    //   folder: "ProjectX",
+    //   resource_type: "video",
+    //   format: "mp4",
+    //   public_id: `${originalname}_${timeStamp}`, // same logic as in your CloudinaryStorage config
 
+    // });
+
+    // const result2 = await cloudinary.uploader.upload(thumbPath, {
+    //   folder: "ProjectX",
+    //   resource_type: "image",
+    //   format: "jpg",
+    //   public_id: `${originalname}_${timeStamp}_thumb`,
+    // });
     const newvid = new VideoDatas(req.body.video);
-    newvid.title = "new video !!!";
+    newvid.title = req.body.video.title || "new video !!!";
     newvid.description = `Uploaded at ${new Date().toLocaleString()}`;
-    newvid.video.url = result.secure_url;
+    // newvid.video.url = result.secure_url;
+    newvid.video.url = `http://localhost:3030/${result0.m3u8Path.replace(
+      /\\/g,
+      "/"
+    )}`;
     newvid.video.tags = req.body.video.categories;
     newvid.video.owner = req.body.video.name || "Anonymous";
-    newvid.video.thumbnailUrl = result2.secure_url;
-    newvid.video.filename = result.public_id;
+    // newvid.video.thumbnailUrl = result2.secure_url;
+    // newvid.video.filename = result.public_id;
+    newvid.video.thumbnailUrl = `http://localhost:3030/thumbnail/${originalname}_compressedthumbnail.jpg`;
+    newvid.video.filename = originalname;
+    console.log(newvid);
     await newvid.save();
-    fs.unlinkSync(uploads);
-    fs.unlinkSync(outputPath);
-    fs.unlinkSync(thumbPath);
+    const data100 = await Promise.all([
+      fs.promises.rm(uploads, { recursive: true, force: true }),
+      fs.promises.rm(cup, { recursive: true, force: true }),
+    ]);
+    // fs.rm(thumbPath, { recursive: true, force: true }, (err) => {
+    //   if (err) {
+    //     console.log(err);
+    //   } else {
+    //     console.log("thumbPath dlted");
+    //   }
+    // });
+    // fs.rm("hls\video", { recursive: true, force: true }, (err) => {
+    //   if (err) {
+    //     console.log(err);
+    //   } else {
+    //     console.log("hls dlted");
+    //   }
+    // });
+    console.log(data100);
     req.flash("success", "Video Uploaded ⭐");
-
     res.redirect("/");
   } catch (err) {
-    console.log("upload err".err);
+    console.log("upload err", err);
     req.flash("error", "we are unable at your region");
     res.redirect("/");
   }
@@ -249,6 +296,7 @@ app.use((req, res, next) => {
 });
 //index Route and home.ejs
 app.get("/", async (req, res) => {
+  // console.log("hi");
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
   const skip = (page - 1) * limit;
@@ -270,10 +318,12 @@ app.get("/", async (req, res) => {
 });
 //search Route and search.ejs
 app.get("/search", async (req, res) => {
+  console.log("/search running");
   const query = req.query.query;
   if (!query) return res.render("search", { result: [] });
   const word = query.split(" ");
   const regexes = word.map((word) => new RegExp(word, "i"));
+  console.log(regexes);
   const results = await VideoDatas.find({
     $or: regexes.flatMap((rgx) => [{ title: rgx }, { description: rgx }]),
   });
@@ -289,12 +339,10 @@ app.get("/search/live", async (req, res) => {
 
   const words = query.split(" ").filter(Boolean);
   const regexes = words.map((word) => new RegExp(word, "i"));
-
   try {
     const results = await VideoDatas.find({
       $or: regexes.flatMap((rgx) => [{ title: rgx }, { description: rgx }]),
     }).limit(6);
-
     res.json(results);
   } catch (err) {
     console.error(err);
@@ -315,7 +363,6 @@ app.get(
   "/video/categories/:tags",
   wrapasync(async (req, res) => {
     let query = decodeURIComponent(req.params.tags);
-
     const regex = new RegExp(query, "i");
     const results = await VideoDatas.find({ "video.tags": regex });
     if (!results) return;
@@ -326,7 +373,7 @@ app.get(
 // main middleware
 app.use((err, req, res, next) => {
   req.flash("error", err.message);
-  next();
+  // next();
 });
 
 //serverXdb
