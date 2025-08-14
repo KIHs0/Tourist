@@ -134,7 +134,6 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
           console.log(error);
           return reject(error);
         }
-        console.log(error);
         resolve({ m3u8Path: `${outDir}/index.m3u8` });
       });
     });
