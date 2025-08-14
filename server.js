@@ -100,6 +100,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(require("cors")());
 app.use(flash());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
