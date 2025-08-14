@@ -47,5 +47,5 @@ Tourist/
 
 1. **Clone the repo**
    ```bash
-   git clone https://github.com/yourusername/projectx.git
-   cd projectx
+   git clone https://github.com/yourusername/Tourist.git
+   
