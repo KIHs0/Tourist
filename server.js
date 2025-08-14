@@ -29,7 +29,7 @@ const { exec } = require("child_process");
 //cors
 app.use(
   require("cors")({
-    origin: "https://tourist-gljx.onrender.com", // or "*" for testing
+    origin: "https://tourist-h76q.onrender.com", // or "*" for testing
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   })
@@ -132,13 +132,13 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
     const newvid = new VideoData(req.body.video);
     newvid.title = req.body.video.title || "new video !!!";
     newvid.description = `Uploaded at ${new Date().toLocaleString()}`;
-    newvid.video.url = `https://tourist-gljx.onrender.com/${result0.m3u8Path.replace(
+    newvid.video.url = `https://tourist-h76q.onrender.com/${result0.m3u8Path.replace(
       /\\/g,
       "/"
     )}`;
     newvid.video.tags = req.body.video.categories;
     newvid.video.owner = req.body.video.name || "Anonymous";
-    newvid.video.thumbnailUrl = `https://tourist-gljx.onrender.com/thumbnail/${originalname}_compressedthumbnail.jpg`;
+    newvid.video.thumbnailUrl = `https://tourist-h76q.onrender.com/thumbnail/${originalname}_compressedthumbnail.jpg`;
     newvid.video.filename = originalname;
     console.log(newvid);
     await newvid.save();
@@ -181,42 +181,34 @@ app.get("/importvideos", async (req, res) => {
           thumbnail,
           `${originalname}_compressedthumbnail.jpg`
         );
-        // Step 1: Compress + Thumbnail
         await ffmpegfx(inputPath, outputPath, thumbPath, originalname);
-        // Step 2: Convert to HLS
         const result0 = await convertToHLS(
           outputPath,
           "hls/videos",
           originalname
         );
-
-        // Step 3: Save in MongoDB
         const newvid = new VideoData({
           title: originalname,
           description: `Imported at ${new Date().toLocaleString()}`,
           video: {
-            url: `https://tourist-gljx.onrender.com/${result0.m3u8Path.replace(
+            url: `https://tourist-h76q.onrender.com/${result0.m3u8Path.replace(
               /\\/g,
               "/"
             )}`,
             tags: ["imported"],
             owner: "Bulk Import",
-            thumbnailUrl: `https://tourist-gljx.onrender.com/thumbnail/${originalname}_compressedthumbnail.jpg`,
+            thumbnailUrl: `https://tourist-h76q.onrender.com/thumbnail/${originalname}_compressedthumbnail.jpg`,
             filename: originalname,
           },
         });
-
         await newvid.save();
-        console.log(`✅ Imported: ${originalname}`);
-
-        // Step 4: Cleanup - delete original and compressed file
+        console.log(newvid);
         await Promise.all([
           fs.promises.unlink(inputPath).catch(() => {}),
           fs.promises.unlink(outputPath).catch(() => {}),
         ]);
       })
     );
-
     res.send("✅ All videos imported & cleaned successfully!");
   } catch (err) {
     console.error("Import error:", err);
@@ -226,6 +218,7 @@ app.get("/importvideos", async (req, res) => {
 
 function convertToHLS(inputPath, outputFolder, videoName) {
   return new Promise((resolve, reject) => {
+    console.log("at hls");
     const outDir = path.join(outputFolder, videoName);
     fs.mkdirSync(outDir, { recursive: true });
     const cmd = `${ffmpegPath} -i "${inputPath}" -c:v libx264 -preset veryfast -crf 21 -c:a aac -b:a 128k -ac 2 -hls_time 6 -hls_playlist_type vod -hls_flags independent_segments -hls_segment_filename "${outDir}/seg_%03d.ts" "${outDir}/index.m3u8"`;
@@ -238,7 +231,7 @@ function convertToHLS(inputPath, outputFolder, videoName) {
     });
   });
 }
-function ffmpegfx(inputPath, outputPath) {
+function ffmpegfx(inputPath, outputPath, thumbPath, originalname) {
   return new Promise((resolve, reject) => {
     ffmpeg(inputPath)
       .outputOptions([
@@ -252,7 +245,6 @@ function ffmpegfx(inputPath, outputPath) {
       .on("end", async () => {
         try {
           console.log("compressfinished");
-
           ffmpeg(inputPath)
             .screenshots({
               count: 1,
