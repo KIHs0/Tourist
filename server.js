@@ -15,18 +15,25 @@ const ffmpeg = require("fluent-ffmpeg");
 const ffmpegPath = require("ffmpeg-static");
 const ffprobePath = require("ffprobe-static").path;
 const fs = require("fs");
-const promises = require("fs").promises;
+// const promises = require("fs").promises;
 const favicon = require("serve-favicon");
 const port = 3030;
 const wrapasync = require("./backend/utils.js/wrapasync.js");
 const ErrorExpress = require("./backend/utils.js/error.js");
-const { cloudinary } = require("./backend/cloudconfig.js");
-const { title } = require("process");
+// const { cloudinary } = require("./backend/cloudconfig.js");
 const uploads = path.join(__dirname, "uploads");
 const thumbnail = path.join(__dirname, "thumbnail");
 const cup = path.join(__dirname, "cup");
-const { exec, spawn, fork, execFile } = require("child_process");
+const { exec } = require("child_process");
 // file making
+//cors
+app.use(
+  require("cors")({
+    origin: "https://tourist-gljx.onrender.com", // or "*" for testing
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
 
 if (!fs.existsSync(uploads)) {
   fs.mkdirSync(uploads);
@@ -61,6 +68,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 const upload = multer({ storage, fileFilter });
+//middleware
 app.use("/thumbnail", express.static(path.join(__dirname, "thumbnail")));
 app.use(express.static(path.join(__dirname, "frontend", "public")));
 app.use(favicon(path.join(__dirname, "backend", "favicon", "favicon2.png")));
@@ -75,6 +83,7 @@ app.use(require("cookie-parser")("keybodarCat"));
 app.use(require("body-parser").urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 const session = require("express-session");
+//store
 const MongoStore = require("connect-mongo");
 const store = MongoStore.create({
   mongoUrl: process.env.MONGO_URL,
@@ -84,7 +93,6 @@ const store = MongoStore.create({
   },
   collectionName: "sessions",
 });
-
 app.use(
   session({
     store,
@@ -100,24 +108,17 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(
-  require("cors")({
-    origin: "https://tourist-gljx.onrender.com", // or "*" for testing
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
 app.use(flash());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+//routes
 // new video Route and compression of video using ffmpeg
 app.get("/newvideo", (req, res) => res.render("add.ejs"));
 app.post("/newvideo", upload.single("video"), async (req, res, next) => {
   const inputPath = req.file.path;
   const timeStamp = new Date().toISOString();
   const originalname = path.parse(req.file.originalname).name;
-
   const outputPath = path.join(cup, `${originalname}_compressed.mp4`);
   const thumbPath = path.join(
     thumbnail,
@@ -127,11 +128,8 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
     return new Promise((resolve, reject) => {
       const outDir = path.join(outputFolder, videoName);
       fs.mkdirSync(outDir, { recursive: true });
-
       const cmd = `${ffmpegPath} -i "${inputPath}" -c:v libx264 -preset veryfast -crf 21 -c:a aac -b:a 128k -ac 2 -hls_time 6 -hls_playlist_type vod -hls_flags independent_segments -hls_segment_filename "${outDir}/seg_%03d.ts" "${outDir}/index.m3u8"`;
-
       exec(cmd, (error) => {
-        console.log("hi");
         if (error) {
           console.log(error);
           return reject(error);
@@ -141,7 +139,6 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
       });
     });
   }
-
   function ffmpegfx(inputPath, outputPath) {
     return new Promise((resolve, reject) => {
       ffmpeg(inputPath)
@@ -191,8 +188,6 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
     console.log("fcx called");
     await ffmpegfx(inputPath, outputPath);
     const result0 = await convertToHLS(outputPath, "hls/videos", originalname);
-    console.log(result0.m3u8Path);
-
     // const result = await cloudinary.uploader.upload(outputPath, {
     //   folder: "ProjectX",
     //   resource_type: "video",
@@ -211,7 +206,7 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
     newvid.title = req.body.video.title || "new video !!!";
     newvid.description = `Uploaded at ${new Date().toLocaleString()}`;
     // newvid.video.url = result.secure_url;
-    newvid.video.url = `http://localhost:3030/${result0.m3u8Path.replace(
+    newvid.video.url = `https://tourist-gljx.onrender.com/${result0.m3u8Path.replace(
       /\\/g,
       "/"
     )}`;
@@ -219,7 +214,7 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
     newvid.video.owner = req.body.video.name || "Anonymous";
     // newvid.video.thumbnailUrl = result2.secure_url;
     // newvid.video.filename = result.public_id;
-    newvid.video.thumbnailUrl = `http://localhost:3030/thumbnail/${originalname}_compressedthumbnail.jpg`;
+    newvid.video.thumbnailUrl = `https://tourist-gljx.onrender.com/thumbnail/${originalname}_compressedthumbnail.jpg`;
     newvid.video.filename = originalname;
     console.log(newvid);
     await newvid.save();
@@ -316,7 +311,6 @@ app.use((req, res, next) => {
 });
 //index Route and home.ejs
 app.get("/", async (req, res) => {
-  // console.log("hi");
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
   const skip = (page - 1) * limit;
@@ -395,7 +389,6 @@ app.use((err, req, res, next) => {
   req.flash("error", err.message);
   // next();
 });
-
 //serverXdb
 app.listen(port, () => {
   console.log("server on at https://localhost:3030");
