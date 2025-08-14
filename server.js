@@ -73,6 +73,7 @@ app.set("view engine", "ejs");
 app.engine("ejs", engine);
 app.use(require("cookie-parser")("keybodarCat"));
 app.use(require("body-parser").urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(
   require("express-session")({
     secret: "keyboardcat",
