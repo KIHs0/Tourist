@@ -100,7 +100,13 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(require("cors")());
+app.use(
+  require("cors")({
+    origin: "https://tourist-gljx.onrender.com", // or "*" for testing
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
 app.use(flash());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
