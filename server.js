@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const VideoDatas = require("./backend/models/video");
+const VideoData = require("./backend/models/video");
 const mongoUrl = process.env.MONGO_URL;
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -129,7 +129,7 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
     console.log("fcx called");
     await ffmpegfx(inputPath, outputPath);
     const result0 = await convertToHLS(outputPath, "hls/videos", originalname);
-    const newvid = new VideoDatas(req.body.video);
+    const newvid = new VideoData(req.body.video);
     newvid.title = req.body.video.title || "new video !!!";
     newvid.description = `Uploaded at ${new Date().toLocaleString()}`;
     newvid.video.url = `https://tourist-gljx.onrender.com/${result0.m3u8Path.replace(
@@ -171,7 +171,7 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
 app.get("/importvideos", async (req, res) => {
   try {
     const files = fs.readdirSync(uploads).filter((f) => f.endsWith(".mp4"));
-
+    if (!files) res.send("no file found");
     await Promise.all(
       files.map(async (file) => {
         const inputPath = path.join(uploads, file);
@@ -181,10 +181,8 @@ app.get("/importvideos", async (req, res) => {
           thumbnail,
           `${originalname}_compressedthumbnail.jpg`
         );
-
         // Step 1: Compress + Thumbnail
         await ffmpegfx(inputPath, outputPath, thumbPath, originalname);
-
         // Step 2: Convert to HLS
         const result0 = await convertToHLS(
           outputPath,
@@ -193,7 +191,7 @@ app.get("/importvideos", async (req, res) => {
         );
 
         // Step 3: Save in MongoDB
-        const newvid = new VideoDatas({
+        const newvid = new VideoData({
           title: originalname,
           description: `Imported at ${new Date().toLocaleString()}`,
           video: {
@@ -354,14 +352,14 @@ app.get("/", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
   const skip = (page - 1) * limit;
-  const total = await VideoDatas.countDocuments({});
+  const total = await VideoData.countDocuments({});
   const totalPages = Math.ceil(total / limit);
   if (page > totalPages) {
     res.render("err.ejs", { message: "Page Not Found" });
     return;
   }
 
-  const data = await VideoDatas.find({})
+  const data = await VideoData.find({})
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
@@ -378,7 +376,7 @@ app.get("/search", async (req, res) => {
   const word = query.split(" ");
   const regexes = word.map((word) => new RegExp(word, "i"));
   console.log(regexes);
-  const results = await VideoDatas.find({
+  const results = await VideoData.find({
     $or: regexes.flatMap((rgx) => [{ title: rgx }, { description: rgx }]),
   });
   res.render("search.ejs", { results, searchQuery: query });
@@ -394,7 +392,7 @@ app.get("/search/live", async (req, res) => {
   const words = query.split(" ").filter(Boolean);
   const regexes = words.map((word) => new RegExp(word, "i"));
   try {
-    const results = await VideoDatas.find({
+    const results = await VideoData.find({
       $or: regexes.flatMap((rgx) => [{ title: rgx }, { description: rgx }]),
     }).limit(6);
     res.json(results);
@@ -408,7 +406,7 @@ app.get(
   "/video/:id/show",
   wrapasync(async (req, res) => {
     const { id } = req.params;
-    const vid = await VideoDatas.findById(id);
+    const vid = await VideoData.findById(id);
     res.render("show.ejs", { vid });
   })
 );
@@ -418,7 +416,7 @@ app.get(
   wrapasync(async (req, res) => {
     let query = decodeURIComponent(req.params.tags);
     const regex = new RegExp(query, "i");
-    const results = await VideoDatas.find({ "video.tags": regex });
+    const results = await VideoData.find({ "video.tags": regex });
     if (!results) return;
 
     res.render("categories.ejs", { results, query });
