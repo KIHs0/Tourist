@@ -171,7 +171,11 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
 app.get("/importvideos", async (req, res) => {
   try {
     const files = fs.readdirSync(uploads).filter((f) => f.endsWith(".mp4"));
-    if (!files) res.send("no file found");
+    if (files.length == 0) {
+      console.log("hi");
+      res.send("no file at upload folder");
+      return;
+    }
     await Promise.all(
       files.map(async (file) => {
         const inputPath = path.join(uploads, file);
