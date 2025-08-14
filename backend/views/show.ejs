@@ -34,7 +34,7 @@
     padding: 1rem;
     white-space: nowrap;
     color: rgba(255, 255, 255, 0.712);
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 9px;
   }
   .videoInfo .tag {
@@ -118,12 +118,11 @@
       <video
         autoplay
         id="video-<%= vid._id %>"
-        width="960"
+        width="0"
         height="540"
         controls
         loop
         playsinline
-        autoplay
       ></video>
       <div class="videoInfo">
         <span><h3><%=vid.title%></h3></span>

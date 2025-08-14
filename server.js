@@ -63,7 +63,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage, fileFilter });
 app.use("/thumbnail", express.static(path.join(__dirname, "thumbnail")));
 app.use(express.static(path.join(__dirname, "frontend", "public")));
-app.use(favicon(path.join(__dirname, "backend", "favicon", "favicon.ico")));
+app.use(favicon(path.join(__dirname, "backend", "favicon", "favicon2.png")));
 app.use(express.urlencoded({ extended: true }));
 app.use("/hls", express.static(path.join(__dirname, "hls")));
 app.use("/thumbnail", express.static(path.join(__dirname, "thumbnail")));

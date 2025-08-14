@@ -184,7 +184,7 @@ a {
 .card {
   color: #666;
   background-color: #333;
-  width: 400px;
+  width: 350px;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(130, 119, 119, 0.1);
@@ -197,14 +197,14 @@ a {
 
 .thumbnail img {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
 }
 
 .video-player video {
   display: none;
-  width: 400px;
-  height: 400px;
+  width: 200px;
+  height: 200px;
   aspect-ratio: 1/1;
   /* display: block; */
   margin-top: 5px;
@@ -216,13 +216,13 @@ a {
 
 .card-info h3 {
   font-size: 1.1rem;
-  color: #333;
+  color: #fff;
   margin-bottom: 10px;
 }
 
 .card-info p {
   font-size: 0.95rem;
-  color: #666;
+  color: #fff;
 }
 
 /* result 0 */
