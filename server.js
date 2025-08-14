@@ -74,14 +74,26 @@ app.engine("ejs", engine);
 app.use(require("cookie-parser")("keybodarCat"));
 app.use(require("body-parser").urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const store = MongoStore.create({
+  mongoUrl: process.env.MONGO_URL,
+  touchAfter: 24 * 3600,
+  crypto: {
+    secret: process.env.SECRET,
+  },
+  collectionName: "sessions",
+});
+
 app.use(
-  require("express-session")({
-    secret: "keyboardcat",
-    resave: true,
+  session({
+    store,
+    secret: "sadfasdfasdfasd",
+    resave: false,
     saveUninitialized: true,
     cookie: {
       expires: 7 * 24 * 60 * 60 * 1000,
-      maxAge: 7 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     },
   })
