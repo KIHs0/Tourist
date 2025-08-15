@@ -102,7 +102,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(
   require("cors")({
-    origin: "https://tourist-gljx.onrender.com", // or "*" for testing
+    origin: "https://tourist-h76q.onrender.com", // or "*" for testing
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   })
@@ -193,20 +193,6 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
     const result0 = await convertToHLS(outputPath, "hls/videos", originalname);
     console.log(result0.m3u8Path);
 
-    // const result = await cloudinary.uploader.upload(outputPath, {
-    //   folder: "ProjectX",
-    //   resource_type: "video",
-    //   format: "mp4",
-    //   public_id: `${originalname}_${timeStamp}`, // same logic as in your CloudinaryStorage config
-
-    // });
-
-    // const result2 = await cloudinary.uploader.upload(thumbPath, {
-    //   folder: "ProjectX",
-    //   resource_type: "image",
-    //   format: "jpg",
-    //   public_id: `${originalname}_${timeStamp}_thumb`,
-    // });
     const newvid = new VideoDatas(req.body.video);
     newvid.title = req.body.video.title || "new video !!!";
     newvid.description = `Uploaded at ${new Date().toLocaleString()}`;
