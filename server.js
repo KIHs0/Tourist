@@ -391,7 +391,7 @@ app.listen(port, () => {
   console.log("server on at https://localhost:3030");
 });
 async function main() {
-  await mongoose.connect(mongoUrl).then((res) => console.log(res));
+  await mongoose.connect(mongoUrl);
 }
 main()
   .then((res) => {

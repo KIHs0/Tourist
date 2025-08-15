@@ -107,12 +107,11 @@ async function bulkUploadAdmin() {
       newvid.video.thumbnailUrl = `https://tourist-h76q.onrender.com/thumbnail/${originalname}_compressedthumbnail.jpg`;
       newvid.video.filename = originalname;
       newvid.video.tags = ["new video", "admin"];
-      // await newvid.save().then((thenres) => {
-      //   console.log(thenres);
-      // });
+      await newvid.save().then((thenres) => {
+        console.log(thenres);
+      });
       console.log(`Saved to DB: ${originalname}`);
     }
-
     console.log("All videos processed ✅");
 
     process.exit(0);
