@@ -320,7 +320,6 @@ app.get("/", async (req, res) => {
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
-  console.log(data);
   // res.json({
   //   vurl: "https://tourist-h76q.onrender.com/video/05_20250327_235957__comp.mp4",
   // });

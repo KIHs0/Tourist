@@ -14,6 +14,8 @@ const uploads = path.join(__dirname, "uploads");
 const cup = path.join(__dirname, "cup");
 const thumbnail = path.join(__dirname, "thumbnail");
 const hlsOutput = path.join(__dirname, "hls", "videos");
+const genTags = require("./use");
+const { get } = require("http");
 
 if (!fs.existsSync(uploads)) {
   fs.mkdirSync(uploads);
@@ -92,7 +94,6 @@ async function bulkUploadAdmin() {
       console.log(`Processing: ${file}`);
       await ffmpegfx(inputPath, outputPath, newname, thumbPath);
       const result0 = await convertToHLS(outputPath, "hls/videos", newname);
-      console.log(result0.m3u8Path);
 
       // Step 3: Save to MongoDB
       const newvid = new VideoDatas();
@@ -105,7 +106,7 @@ async function bulkUploadAdmin() {
       newvid.video.owner = "Anonymous";
       newvid.video.thumbnailUrl = `https://tourist-h76q.onrender.com/thumbnail/${newname}_compressedthumbnail.jpg`;
       newvid.video.filename = newname;
-      newvid.video.tags = ["new video", "admin"];
+      newvid.video.tags = genTags();
       await newvid.save().then((thenres) => {
         console.log(thenres);
       });
