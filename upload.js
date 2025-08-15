@@ -81,36 +81,35 @@ async function bulkUploadAdmin() {
 
     for (const file of files) {
       const inputPath = path.join(uploads, file);
-      const originalname = path.parse(file).name;
-      const outputPath = path.join(cup, `${originalname}_compressed.mp4`);
+      const originalname = path.parse(file).name.split(" ");
+      let newname = originalname[0] + originalname[1];
+
+      const outputPath = path.join(cup, `${newname}_compressed.mp4`);
       const thumbPath = path.join(
         thumbnail,
-        `${originalname}_compressedthumbnail.jpg`
+        `${newname}_compressedthumbnail.jpg`
       );
       console.log(`Processing: ${file}`);
-      await ffmpegfx(inputPath, outputPath, originalname, thumbPath);
-      const result0 = await convertToHLS(
-        outputPath,
-        "hls/videos",
-        originalname
-      );
+      await ffmpegfx(inputPath, outputPath, newname, thumbPath);
+      const result0 = await convertToHLS(outputPath, "hls/videos", newname);
+      console.log(result0.m3u8Path);
 
       // Step 3: Save to MongoDB
       const newvid = new VideoDatas();
-      newvid.title = originalname;
+      newvid.title = newname;
       newvid.description = `Uploaded at ${new Date().toLocaleString()}`;
       newvid.video.url = `https://tourist-h76q.onrender.com/${result0.m3u8Path.replace(
         /\\/g,
         "/"
       )}`;
       newvid.video.owner = "Anonymous";
-      newvid.video.thumbnailUrl = `https://tourist-h76q.onrender.com/thumbnail/${originalname}_compressedthumbnail.jpg`;
-      newvid.video.filename = originalname;
+      newvid.video.thumbnailUrl = `https://tourist-h76q.onrender.com/thumbnail/${newname}_compressedthumbnail.jpg`;
+      newvid.video.filename = newname;
       newvid.video.tags = ["new video", "admin"];
       await newvid.save().then((thenres) => {
         console.log(thenres);
       });
-      console.log(`Saved to DB: ${originalname}`);
+      console.log(`Saved to DB: ${newname}`);
     }
     console.log("All videos processed ✅");
 
