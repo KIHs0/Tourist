@@ -102,7 +102,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(
   require("cors")({
-    origin: "https://tourist-h76q.onrender.com", // or "*" for testing
+    // origin: "https://tourist-h76q.onrender.com", // or "*" for testing
+    origin:"*",
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   })
@@ -131,12 +132,11 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
       const cmd = `${ffmpegPath} -i "${inputPath}" -c:v libx264 -preset veryfast -crf 21 -c:a aac -b:a 128k -ac 2 -hls_time 6 -hls_playlist_type vod -hls_flags independent_segments -hls_segment_filename "${outDir}/seg_%03d.ts" "${outDir}/index.m3u8"`;
 
       exec(cmd, (error) => {
-        console.log("hi");
+        console.log("exec hls cmd executing");
         if (error) {
           console.log(error);
           return reject(error);
         }
-        console.log(error);
         resolve({ m3u8Path: `${outDir}/index.m3u8` });
       });
     });
@@ -197,7 +197,7 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
     newvid.title = req.body.video.title || "new video !!!";
     newvid.description = `Uploaded at ${new Date().toLocaleString()}`;
     // newvid.video.url = result.secure_url;
-    newvid.video.url = `http://localhost:3030/${result0.m3u8Path.replace(
+    newvid.video.url = `https://tourist-h76q.onrender.com/${result0.m3u8Path.replace(
       /\\/g,
       "/"
     )}`;
@@ -205,14 +205,15 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
     newvid.video.owner = req.body.video.name || "Anonymous";
     // newvid.video.thumbnailUrl = result2.secure_url;
     // newvid.video.filename = result.public_id;
-    newvid.video.thumbnailUrl = `http://localhost:3030/thumbnail/${originalname}_compressedthumbnail.jpg`;
+    newvid.video.thumbnailUrl = `https://tourist-h76q.onrender.com/thumbnail/${originalname}_compressedthumbnail.jpg`;
     newvid.video.filename = originalname;
-    console.log(newvid);
-    await newvid.save();
-    const data100 = await Promise.all([
-      fs.promises.rm(uploads, { recursive: true, force: true }),
-      fs.promises.rm(cup, { recursive: true, force: true }),
-    ]);
+    await newvid.save().then((thenres) => {
+      console.log(thenres);
+    });
+    // await Promise.all([
+    //   await fs.promises.rm(uploads, { recursive: true, force: true }),
+    //   await fs.promises.rm(cup, { recursive: true, force: true }),
+    // ]);
     // fs.rm(thumbPath, { recursive: true, force: true }, (err) => {
     //   if (err) {
     //     console.log(err);
@@ -227,9 +228,10 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
     //     console.log("hls dlted");
     //   }
     // });
-    console.log(data100);
     req.flash("success", "Video Uploaded ⭐");
     res.redirect("/");
+    console.log("finished");
+    return;
   } catch (err) {
     console.log("upload err", err);
     req.flash("error", "we are unable at your region");
@@ -318,7 +320,7 @@ app.get("/", async (req, res) => {
     .skip(skip)
     .limit(limit);
   // res.json({
-  //   vurl: "http://localhost:3030/video/05_20250327_235957__comp.mp4",
+  //   vurl: "https://tourist-h76q.onrender.com/video/05_20250327_235957__comp.mp4",
   // });
   res.render("home.ejs", { data, totalPages, currentPage: page });
 });

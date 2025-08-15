@@ -1,17 +1,25 @@
 const mongoose = require("mongoose");
 const VideoData = require("../models/video");
-let { data } = require("./init");
-const mongoUrl = "mongodb://127.0.0.1:27017/VideoData";
+const mongoUrl =
+  "mongodb+srv://kihsogaming:TMN5co49rNR4GWEs@cluster0.17qkru9.mongodb.net/Tourist?retryWrites=true&w=majority&appName=Cluster0";
 
 const initdb = async function () {
-  // await VideoData.deleteMany({});
-  const newdata = data.map(({ tags, ...rest }) => rest);
-  newdata.map(({ video, ...rest }) => {
-    video.owner = "Anonymous01";
-    video.tags = ["new video"];
-  });
-  await VideoData.insertMany(newdata);
-};
+  const data = await VideoData.find();
+  await Promise.all(
+    data.map(async (doc) => {
+      doc.video.owner = "Anonymous01";
+      doc.video.url = doc.video.url.replace(
+        "http://localhost:3030",
+        "https://tourist-h76q.onrender.com"
+      );
+      doc.video.thumbnailUrl = doc.video.thumbnailUrl.replace(
+        "http://localhost:3030",
+        "https://tourist-h76q.onrender.com"
+      );
+      await doc.save(); // Save the full Mongoose document
+    })
+  );
+}; 
 initdb();
 
 async function main() {
