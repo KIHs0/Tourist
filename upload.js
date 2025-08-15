@@ -84,7 +84,7 @@ async function bulkUploadAdmin() {
     for (const file of files) {
       const inputPath = path.join(uploads, file);
       const originalname = path.parse(file).name.split(" ");
-      let newname = originalname[0] + originalname[1];
+      let newname = originalname?.[0] ?? "" + originalname?.[1] ?? "";
 
       const outputPath = path.join(cup, `${newname}_compressed.mp4`);
       const thumbPath = path.join(
