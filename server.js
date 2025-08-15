@@ -4,6 +4,7 @@ const app = express();
 const mongoose = require("mongoose");
 const VideoDatas = require("./backend/models/video");
 const mongoUrl = process.env.MONGO_URL;
+console.log(mongoUrl);
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const engine = require("ejs-mate");
@@ -103,7 +104,7 @@ app.use(passport.session());
 app.use(
   require("cors")({
     // origin: "https://tourist-h76q.onrender.com", // or "*" for testing
-    origin:"*",
+    origin: "*",
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   })
@@ -319,6 +320,7 @@ app.get("/", async (req, res) => {
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
+  console.log(data);
   // res.json({
   //   vurl: "https://tourist-h76q.onrender.com/video/05_20250327_235957__comp.mp4",
   // });
@@ -389,7 +391,7 @@ app.listen(port, () => {
   console.log("server on at https://localhost:3030");
 });
 async function main() {
-  await mongoose.connect(mongoUrl);
+  await mongoose.connect(mongoUrl).then((res) => console.log(res));
 }
 main()
   .then((res) => {

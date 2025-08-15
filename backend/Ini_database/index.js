@@ -20,7 +20,7 @@ const initdb = async function () {
     })
   );
 }; 
-initdb();
+// initdb();
 
 async function main() {
   await mongoose.connect(mongoUrl);
