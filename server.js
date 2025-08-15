@@ -232,7 +232,7 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
     req.flash("success", "Video Uploaded ⭐");
     res.redirect("/");
     console.log("finished");
-    return;
+    process.exit(0);
   } catch (err) {
     console.log("upload err", err);
     req.flash("error", "we are unable at your region");
