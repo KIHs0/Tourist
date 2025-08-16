@@ -109,67 +109,6 @@ body {
 
 /*  pagination */
 
-.pagination {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  top: 50%;
-  justify-content: space-between;
-  width: 100vw;
-  height: 5rem;
-  padding: 1rem 2rem;
-  border-radius: 50px;
-  z-index: 10;
-}
-
-.pagination a {
-  text-decoration: none;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.pagination a:hover {
-  transform: scale(1.2);
-}
-
-.pagination i {
-  color: #ccc;
-  font-size: 1.8rem;
-  position: relative;
-}
-
-.pagination span::before,
-.pagination span::after {
-  content: "";
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: cyan;
-  border-radius: 50%;
-  opacity: 0.6;
-  display: none;
-  transition: all 0.3s ease-in-out;
-}
-
-.pagination span::before {
-  top: -8px;
-  left: -8px;
-}
-
-.pagination span::after {
-  bottom: -8px;
-  right: -8px;
-}
-
-.pagination a:hover span::before,
-.pagination a:hover span::after {
-  opacity: 1;
-  display: block;
-  width: 10px;
-  height: 10px;
-  background: cyan;
-}
 /*  pagination */
 
 .container {

@@ -109,11 +109,17 @@
   /* Responsive */
   @media (max-width: 768px) {
     .video-container {
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
       gap: 12px;
       padding: 12px;
     }
-
+    @media (max-width: 390px) {
+      .video-container {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+        padding: 12px;
+      }
+    }
     .video-card {
       aspect-ratio: 1/1;
     }
@@ -122,27 +128,11 @@
     }
 
     .video-title {
-      font-size: 0.9rem;
+      font-size: 0.6rem;
     }
 
     .video-description {
-      font-size: 0.75rem;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .video-container {
-      grid-template-columns: 1fr;
-    }
-
-    .video-card {
-      border-radius: 8px;
-    }
-
-    .page-btn {
-      width: 34px;
-      height: 34px;
-      font-size: 0.85rem;
+      font-size: 0.55rem;
     }
   }
 </style>
