@@ -1,40 +1,179 @@
-<%layout("../layout/plate.ejs")%>
+<% layout("../layout/plate.ejs") %>
+<style>
+  /* Container for all video cards */
+  /* Container for all video cards */
+  .video-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+
+  /* Individual video card */
+  .video-card {
+    background: #1e1e1e;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    aspect-ratio: 1/1;
+  }
+
+  .video-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .video-card a {
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  /* Thumbnail section */
+  .thumbnail {
+    width: 100%;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Video details */
+  .video-details {
+    padding: 12px;
+  }
+
+  .video-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 6px;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .video-description {
+    font-size: 0.85rem;
+    color: #aaa;
+    max-height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Pagination styling */
+  .paginations {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 30px 0;
+  }
+
+  .page-btns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    background: #333;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .page-btns:hover {
+    background: #555;
+    transform: translateY(-2px);
+  }
+
+  .page-btns.active {
+    background: #ff6600; /* highlight color */
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .video-container {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      padding: 12px;
+    }
+
+    .video-card {
+      aspect-ratio: 1/1;
+    }
+    .thumbnail img {
+      object-fit: fill;
+    }
+
+    .video-title {
+      font-size: 0.9rem;
+    }
+
+    .video-description {
+      font-size: 0.75rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .video-container {
+      grid-template-columns: 1fr;
+    }
+
+    .video-card {
+      border-radius: 8px;
+    }
+
+    .page-btn {
+      width: 34px;
+      height: 34px;
+      font-size: 0.85rem;
+    }
+  }
+</style>
+
 <body>
-  <div class="container">
-    <% for ( data of data) { %>
-    <div class="card">
-      <a href="/video/<%=data._id%>/show">
+  <div class="video-container">
+    <% for (video of data) { %>
+    <div class="video-card">
+      <a href="/video/<%= video._id %>/show">
         <div class="thumbnail">
           <img
-            src="<%= data.video.thumbnailUrl %>"
-            alt="<%= data.video.filename %>"
+            src="<%= video.video.thumbnailUrl %>"
+            alt="<%= video.video.filename %>"
+            loading="lazy"
           />
         </div>
-        <div class="video-player">
-          <!-- <video controls>
-            <source src="<%= data.video.url %>" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video> -->
-          <!-- <video id="video-<%= data._id %>" controls width="320" height="180"></video> -->
-        </div>
-        <div class="card-info">
-          <p><%=data.title%></p>
-          <p><%= data.description %></p>
+        <div class="video-details">
+          <h3 class="video-title"><%= video.title %></h3>
+          <p class="video-description"><%= video.description %></p>
         </div>
       </a>
     </div>
-
     <% } %>
-    <!-- // next prev -->
-     <div class="pagination">
+  </div>
 
-       <%if(currentPage>1) {%>
-        <a href="/?page=<%=currentPage-1%>"><span><i class="fa-solid fa-arrow-left"></i></span></a>
-        <%}%>
-        <%if(currentPage<totalPages) {%>
-          <a href="/?page=<%=currentPage+1%>"><span><i class="fa-solid fa-arrow-right"></i></span></a>
-          <%}%>
-        </div>
-
+  <!-- Pagination -->
+  <div class="paginations">
+    <% for (let i = 1; i <= totalPages; i++) { %>
+    <a
+      href="/?page=<%= i %>"
+      class="page-btns <%= i === currentPage ? 'active' : '' %>"
+    >
+      <%= i %>
+    </a>
+    <% } %>
   </div>
 </body>
