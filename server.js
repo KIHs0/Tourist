@@ -118,13 +118,10 @@ app.get("/newvideo", (req, res) => res.render("add.ejs"));
 app.post("/newvideo", upload.single("video"), async (req, res, next) => {
   const inputPath = req.file.path;
   const timeStamp = new Date().toISOString();
-  const originalname = path.parse(req.file.originalname).name;
-
-  const outputPath = path.join(cup, `${originalname}_compressed.mp4`);
-  const thumbPath = path.join(
-    thumbnail,
-    `${originalname}_compressedthumbnail.jpg`
-  );
+  const originalname = path.parse(req.file.originalname).name.split(" ");
+  let newname = originalname?.[0] ?? "" + originalname?.[1] ?? "";
+  const outputPath = path.join(cup, `${newname}_compressed.mp4`);
+  const thumbPath = path.join(thumbnail, `${newname}_compressedthumbnail.jpg`);
   function convertToHLS(inputPath, outputFolder, videoName) {
     return new Promise((resolve, reject) => {
       const outDir = path.join(outputFolder, videoName);
@@ -190,22 +187,21 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
   }
   try {
     console.log("fcx called");
+    req.flash("success", "video is uploading ...");
+    res.redirect("/");
     await ffmpegfx(inputPath, outputPath);
-    const result0 = await convertToHLS(outputPath, "hls/videos", originalname);
+    const result0 = await convertToHLS(outputPath, "hls/videos", newname);
     console.log(result0.m3u8Path);
-
     const newvid = new VideoDatas(req.body.video);
     newvid.title = req.body.video.title || "new video !!!";
     newvid.description = `Uploaded at ${new Date().toLocaleString()}`;
-    // newvid.video.url = result.secure_url;
     newvid.video.url = `https://tourist-h76q.onrender.com/${result0.m3u8Path.replace(
       /\\/g,
       "/"
     )}`;
     newvid.video.tags = req.body.video.categories;
     newvid.video.owner = req.body.video.name || "Anonymous";
-    // newvid.video.thumbnailUrl = result2.secure_url;
-    // newvid.video.filename = result.public_id;
+
     newvid.video.thumbnailUrl = `https://tourist-h76q.onrender.com/thumbnail/${originalname}_compressedthumbnail.jpg`;
     newvid.video.filename = originalname;
     await newvid.save().then((thenres) => {
@@ -230,8 +226,6 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
     //   }
     // });
     req.flash("success", "Video Uploaded ⭐");
-    res.redirect("/");
-    console.log("finished");
     process.exit(0);
   } catch (err) {
     console.log("upload err", err);
