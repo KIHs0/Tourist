@@ -4,10 +4,11 @@ const app = express();
 const mongoose = require("mongoose");
 const VideoDatas = require("./backend/models/video");
 const mongoUrl = process.env.MONGO_URL;
-console.log(mongoUrl);
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+// @ts-ignore
 const engine = require("ejs-mate");
+
 const path = require("path");
 const User = require("./backend/models/user");
 const flash = require("express-flash");
@@ -27,6 +28,7 @@ const uploads = path.join(__dirname, "uploads");
 const thumbnail = path.join(__dirname, "thumbnail");
 const cup = path.join(__dirname, "cup");
 const { exec, spawn, fork, execFile } = require("child_process");
+const { sessionTracker, Session } = require("./backend/utils.js/session.js");
 // file making
 
 if (!fs.existsSync(uploads)) {
@@ -75,6 +77,7 @@ app.engine("ejs", engine);
 app.use(require("cookie-parser")("keybodarCat"));
 app.use(require("body-parser").urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
+
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const store = MongoStore.create({
@@ -103,16 +106,19 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(
   require("cors")({
-    // origin: "https://tourist-h76q.onrender.com", // or "*" for testing
-    origin: "*",
+    origin: "https://tourist-h76q.onrender.com", // or "*" for testing
+    // origin: "*",
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   })
 );
 app.use(flash());
+app.use(sessionTracker);
+
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
 // new video Route and compression of video using ffmpeg
 app.get("/newvideo", (req, res) => res.render("add.ejs"));
 app.post("/newvideo", upload.single("video"), async (req, res, next) => {
@@ -299,25 +305,52 @@ app.use((req, res, next) => {
 });
 //index Route and home.ejs
 app.get("/", async (req, res) => {
-  // console.log("hi");
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
   const skip = (page - 1) * limit;
   const total = await VideoDatas.countDocuments({});
   const totalPages = Math.ceil(total / limit);
+  console.log({ page, skip, total, totalPages });
   if (page > totalPages) {
     res.render("err.ejs", { message: "Page Not Found" });
     return;
   }
 
   const data = await VideoDatas.find({})
-    .sort({ createdAt: -1 })
+    .sort({ createdAt: -1, _id: -1 })
     .skip(skip)
     .limit(limit);
+  // const title = data.flatMap((e) => e.title);
+  // res.json({ data: title });
+  // return;
   // res.json({
   //   vurl: "https://tourist-h76q.onrender.com/video/05_20250327_235957__comp.mp4",
   // });
   res.render("home.ejs", { data, totalPages, currentPage: page });
+});
+app.get("/admin", async (req, res) => {
+  try {
+    const token = req.query.token;
+    if (token !== "oshikloveswiku") {
+      res.redirect("/");
+      return;
+    }
+
+    const totalSessions = await Session.countDocuments();
+    const activeSessions = await Session.countDocuments({
+      lastActive: { $gte: new Date(Date.now() - 5 * 60 * 1000) }, // active in last 5 mins
+    });
+
+    const allSessions = await Session.find().sort({ lastActive: -1 }).limit(50); // recent 50
+    res.render("admin", {
+      totalSessions,
+      activeSessions,
+      sessions: allSessions,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Something went wrong" });
+  }
 });
 //search Route and search.ejs
 app.get("/search", async (req, res) => {
@@ -380,16 +413,18 @@ app.use((err, req, res, next) => {
 });
 
 //serverXdb
-app.listen(port, () => {
-  console.log("server on at https://localhost:3030");
-});
-async function main() {
-  await mongoose.connect(mongoUrl);
+async function startServer() {
+  try {
+    await mongoose.connect(mongoUrl);
+    console.log("MongoDB connected successfully");
+
+    app.listen(port, () => {
+      console.log(`Server running at https://localhost:${port}`);
+    });
+  } catch (err) {
+    console.error("Error connecting to MongoDB:", err);
+    process.exit(1); // stop server if DB fails
+  }
 }
-main()
-  .then((res) => {
-    console.log("server X database");
-  })
-  .catch((err) => {
-    console.log("err happen connecting db");
-  });
+
+startServer();

@@ -1,0 +1,114 @@
+<% layout("../layout/plate.ejs") %>
+<style>
+  section {
+    padding-inline-start: 2rem;
+    overflow: hidden;
+  }
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 2rem;
+  }
+  .card {
+    background: blanchedalmond;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    flex: 1;
+    margin: 0 1rem;
+  }
+  .card h2 {
+    margin: 0;
+    font-size: 2rem;
+    color: #1a73e8;
+  }
+  .card p {
+    margin: 0.5rem 0 0;
+    color: #555;
+  }
+  table {
+    width: 95%;
+    margin: auto;
+    border-collapse: collapse;
+    background: black;
+    color: blanchedalmond;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  th,
+  td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  th {
+    background: gray;
+    color: white;
+  }
+  tr:hover {
+    background: #f1f7ff;
+    color: black;
+  }
+  @media (max-width: 768px) {
+    .stats {
+      flex-direction: column;
+    }
+    .card {
+      margin: 1rem 0;
+    }
+    table {
+      font-size: 0.9rem;
+    }
+  }
+</style>
+<body>
+  <% if (sessions.length === 0) { %>
+  <h1 style="text-align: center; margin-top: 2rem">
+    No session data available
+  </h1>
+  <% } else { %>
+  <header style="color: blanchedalmond; margin: 3rem">
+    Admin Dashboard - Visitor Sessions
+  </header>
+  <section class="stats">
+    <div class="card">
+      <h2><%= totalSessions %></h2>
+      <p>Total Sessions</p>
+    </div>
+    <div class="card">
+      <h2><%= activeSessions %></h2>
+      <p>Active (last 5 min)</p>
+    </div>
+  </section>
+
+  <section>
+    <table>
+      <thead>
+        <tr>
+          <th>IP Address</th>
+          <th>User Agent</th>
+          <th>Start Time</th>
+          <th>Last Active</th>
+          <th>Duration (sec)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% sessions.forEach(session => { %>
+        <tr>
+          <td><%= session.ip %></td>
+          <td><%= session.userAgent.substring(0,50) %>...</td>
+          <td><%= new Date(session.startTime).toLocaleString() %></td>
+          <td><%= new Date(session.lastActive).toLocaleString() %></td>
+          <td>
+            <%= Math.round((new Date(session.lastActive) - new
+            Date(session.startTime)) / 1000) %>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </section>
+  <% } %>
+</body>
