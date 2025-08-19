@@ -2,50 +2,69 @@
   <style>
     .containerSidebar {
       z-index: 10;
-      position: static;
-      left: 0;
+      position: sticky;
       top: 4rem;
       display: flex;
-      gap: 3rem;
-      flex-direction: column;
-      padding: 0.8em 0;
-      touch-action: manipulation;
-      margin-bottom: 1rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      /* background: #111; */
+      padding: 0.8rem 1rem;
+      justify-content: center;
+      gap: 2rem;
     }
-    .containerSidebar select {
-      font-weight: bold;
-      border: none;
-      padding: 0.4em;
-      position: absolute;
-      background: #333;
-      border-radius: 30px;
-      outline: none;
+
+    .containerSidebar::-webkit-scrollbar {
+      display: none; /* hide scrollbar */
+    }
+
+    .category-pill {
+      display: inline-block;
+      /* background: #222; */
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
       cursor: pointer;
-      /* color: whitesmoke; */
+      flex-shrink: 0;
+      transition: 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.099);
+      box-shadow: 0 0 2px rgba(255, 255, 255, 0);
     }
-    option {
-      color: black;
+
+    .category-pill:hover {
+      background: #444;
+      border-color: cyan;
+      box-shadow: 0 1px 4px rgba(6, 175, 181, 0.4);
     }
 
     @media (max-width: 769px) {
-      .containerSidebar select {
-        font-size: 0.6rem;
-        text-transform: capitalize;
+      .category-pill {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.8rem;
       }
     }
   </style>
-  <div class="containerSidebar">
-    <div>
-      <select name="" id="categorydropdown">
-        <!-- <option value="/video/categories/tags">Category</option> -->
 
-        <option value="/video/categories/categries">Category</option>
-        <option value="/video/categories/kanda">kanda</option>
-        <option value="/video/categories/nepali">nepali</option>
-        <option value="/video/categories/indian">Indian</option>
-        <option value="/video/categories/teen">teen</option>
-        <option value="/video/categories/vagina">vagina</option>
-      </select>
+  <div class="containerSidebar">
+    <div class="category-pill" data-link="/video/categories/kanda">Kanda</div>
+    <div class="category-pill" data-link="/video/categories/teen">Teen</div>
+    <div class="category-pill" data-link="/video/categories/nepali">Nepali</div>
+    <div class="category-pill" data-link="/video/categories/vagina">Vagina</div>
+    <div class="category-pill" data-link="/video/categories/indian">Indian</div>
+    <div class="category-pill" data-link="/video/categories/asian">Asian</div>
+    <div class="category-pill" data-link="/video/categories/japanese">
+      Japanese
     </div>
+    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
   </div>
+
+  <script>
+    // Optional: redirect on click
+    document.querySelectorAll(".category-pill").forEach((pill) => {
+      pill.addEventListener("click", () => {
+        window.location.href = pill.dataset.link;
+      });
+    });
+  </script>
 </body>

@@ -397,12 +397,16 @@
               ><i class="fas fa-file-video"></i
               ><span class="vs-nav-text">Upload</span></a
             >
-
-            <!-- Simulate logged in user -->
+            <%if(currUser){%>
             <a class="vs-nav-item vs-user-icon" onclick="toggleProfile()">
               <i class="fas fa-user"></i>
             </a>
-
+            <%}else{%>
+            <!-- Simulate logged in user -->
+            <a class="vs-nav-item vs-user-icon" href="/login">
+              <i class="fas fa-user"></i>
+            </a>
+            <%}%>
             <button
               class="vs-search-toggle"
               type="button"

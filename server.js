@@ -102,23 +102,132 @@ app.use(
     },
   })
 );
+app.use(sessionTracker);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(
   require("cors")({
-    origin: "https://tourist-h76q.onrender.com", // or "*" for testing
-    // origin: "*",
+    // origin: "https://tourist-h76q.onrender.com", // or "*" for testing
+    origin: "*",
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   })
 );
 app.use(flash());
-app.use(sessionTracker);
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+//locals middleware
+app.use((req, res, next) => {
+  res.locals.successMsg = req.flash("success");
+  res.locals.errorMsg = req.flash("error");
+  res.locals.currUser = req.user;
+  next();
+});
+//index Route and home.ejs
+app.get("/", async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+    const total = await VideoDatas.countDocuments({});
+    const totalPages = Math.ceil(total / limit);
+    console.log({ page, skip, total, totalPages });
+    if (page > totalPages) {
+      res.render("err.ejs", { message: "Page Not Found" });
+      return;
+    }
+
+    const data = await VideoDatas.find({})
+      .sort({ createdAt: -1, _id: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.render("home", { data, totalPages, currentPage: page });
+  } catch (error) {
+    console.log(error);
+  }
+});
+app.get("/admin", async (req, res) => {
+  try {
+    const token = req.query.token;
+    if (token !== "oshikloveswiku") {
+      res.redirect("/");
+      return;
+    }
+
+    const totalSessions = await Session.countDocuments();
+    const activeSessions = await Session.countDocuments({
+      lastActive: { $gte: new Date(Date.now() - 5 * 60 * 1000) }, // active in last 5 mins
+    });
+
+    const allSessions = await Session.find().sort({ lastActive: -1 }).limit(50); // recent 50
+    res.render("admin", {
+      totalSessions,
+      activeSessions,
+      sessions: allSessions,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
+//search Route and search.ejs
+app.get("/search", async (req, res) => {
+  console.log("/search running");
+  const query = req.query.query;
+  if (!query) return res.render("search", { result: [] });
+  const word = query.split(" ");
+  const regexes = word.map((word) => new RegExp(word, "i"));
+  console.log(regexes);
+  const results = await VideoDatas.find({
+    $or: regexes.flatMap((rgx) => [{ title: rgx }, { description: rgx }]),
+  });
+  res.render("search.ejs", { results, searchQuery: query });
+});
+// search live and result and sending res to frontend
+app.get("/search/live", async (req, res) => {
+  const query = req.query.query;
+
+  if (!query) {
+    return res.json([]);
+  }
+
+  const words = query.split(" ").filter(Boolean);
+  const regexes = words.map((word) => new RegExp(word, "i"));
+  try {
+    const results = await VideoDatas.find({
+      $or: regexes.flatMap((rgx) => [{ title: rgx }, { description: rgx }]),
+    }).limit(6);
+    res.json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+//show Route and show.ejs
+app.get(
+  "/video/:id/show",
+  wrapasync(async (req, res) => {
+    const { id } = req.params;
+    const vid = await VideoDatas.findById(id);
+    res.render("show.ejs", { vid });
+  })
+);
+// categories route and cateogires.ejs
+app.get(
+  "/video/categories/:tags",
+  wrapasync(async (req, res) => {
+    let query = decodeURIComponent(req.params.tags);
+    const regex = new RegExp(query, "i");
+    const results = await VideoDatas.find({ "video.tags": regex });
+    if (!results) return;
+
+    res.render("categories.ejs", { results, query });
+  })
+);
 // new video Route and compression of video using ffmpeg
 app.get("/newvideo", (req, res) => res.render("add.ejs"));
 app.post("/newvideo", upload.single("video"), async (req, res, next) => {
@@ -296,120 +405,11 @@ app.get("/logout", (req, res) => {
   });
 });
 
-//locals middleware
-app.use((req, res, next) => {
-  res.locals.successMsg = req.flash("success");
-  res.locals.errorMsg = req.flash("error");
-  res.locals.currUser = req.user;
-  next();
-});
-//index Route and home.ejs
-app.get("/", async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = 10;
-  const skip = (page - 1) * limit;
-  const total = await VideoDatas.countDocuments({});
-  const totalPages = Math.ceil(total / limit);
-  console.log({ page, skip, total, totalPages });
-  if (page > totalPages) {
-    res.render("err.ejs", { message: "Page Not Found" });
-    return;
-  }
-
-  const data = await VideoDatas.find({})
-    .sort({ createdAt: -1, _id: -1 })
-    .skip(skip)
-    .limit(limit);
-  // const title = data.flatMap((e) => e.title);
-  // res.json({ data: title });
-  // return;
-  // res.json({
-  //   vurl: "https://tourist-h76q.onrender.com/video/05_20250327_235957__comp.mp4",
-  // });
-  res.render("home.ejs", { data, totalPages, currentPage: page });
-});
-app.get("/admin", async (req, res) => {
-  try {
-    const token = req.query.token;
-    if (token !== "oshikloveswiku") {
-      res.redirect("/");
-      return;
-    }
-
-    const totalSessions = await Session.countDocuments();
-    const activeSessions = await Session.countDocuments({
-      lastActive: { $gte: new Date(Date.now() - 5 * 60 * 1000) }, // active in last 5 mins
-    });
-
-    const allSessions = await Session.find().sort({ lastActive: -1 }).limit(50); // recent 50
-    res.render("admin", {
-      totalSessions,
-      activeSessions,
-      sessions: allSessions,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Something went wrong" });
-  }
-});
-//search Route and search.ejs
-app.get("/search", async (req, res) => {
-  console.log("/search running");
-  const query = req.query.query;
-  if (!query) return res.render("search", { result: [] });
-  const word = query.split(" ");
-  const regexes = word.map((word) => new RegExp(word, "i"));
-  console.log(regexes);
-  const results = await VideoDatas.find({
-    $or: regexes.flatMap((rgx) => [{ title: rgx }, { description: rgx }]),
-  });
-  res.render("search.ejs", { results, searchQuery: query });
-});
-// search live and result and sending res to frontend
-app.get("/search/live", async (req, res) => {
-  const query = req.query.query;
-
-  if (!query) {
-    return res.json([]);
-  }
-
-  const words = query.split(" ").filter(Boolean);
-  const regexes = words.map((word) => new RegExp(word, "i"));
-  try {
-    const results = await VideoDatas.find({
-      $or: regexes.flatMap((rgx) => [{ title: rgx }, { description: rgx }]),
-    }).limit(6);
-    res.json(results);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
-  }
-});
-//show Route and show.ejs
-app.get(
-  "/video/:id/show",
-  wrapasync(async (req, res) => {
-    const { id } = req.params;
-    const vid = await VideoDatas.findById(id);
-    res.render("show.ejs", { vid });
-  })
-);
-// categories route and cateogires.ejs
-app.get(
-  "/video/categories/:tags",
-  wrapasync(async (req, res) => {
-    let query = decodeURIComponent(req.params.tags);
-    const regex = new RegExp(query, "i");
-    const results = await VideoDatas.find({ "video.tags": regex });
-    if (!results) return;
-
-    res.render("categories.ejs", { results, query });
-  })
-);
 // main middleware
 app.use((err, req, res, next) => {
+  console.log(err);
   req.flash("error", err.message);
-  // next();
+  next();
 });
 
 //serverXdb
