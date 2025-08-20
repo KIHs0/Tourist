@@ -34,6 +34,7 @@ body {
   position: fixed;
   width: 451px;
   margin-left: -6rem;
+  z-index: 10;
 }
 
 /* Custom Scrollbar for Webkit (Chrome, Edge) */
@@ -237,11 +238,10 @@ a {
     padding: 0 0.7em 0 0.7em;
   }
   #resultsfrinput {
-    margin-left: -2rem;
-    width: 300px;
-    height: 50px;
+    margin: 0 auto;
     border-radius: 10px;
     padding: 0;
+    z-index: 11;
   }
   #resultsfrinput h3 {
     font-size: 0.7rem;

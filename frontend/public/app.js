@@ -30,11 +30,7 @@ const resultsDiv = document.getElementById("resultsfrinput");
 //   mainuserIcon.style.display =
 //     mainuserIcon.style.display == "none" ? "block" : "none";
 // });
-const containerSelect = document.querySelector(".containerSidebar .select ");
-containerSelect.addEventListener("click", (e) => {
-  let url = e?.originalTarget?.value;
-  window.location.href = url;
-});
+
 // containerSelect.addEventListener("change", () => {
 //   console.log(containerSelect.value);
 //   // const url = containerSelect.value;

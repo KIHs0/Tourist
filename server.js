@@ -134,7 +134,6 @@ app.get("/", async (req, res) => {
     const skip = (page - 1) * limit;
     const total = await VideoDatas.countDocuments({});
     const totalPages = Math.ceil(total / limit);
-    console.log({ page, skip, total, totalPages });
     if (page > totalPages) {
       res.render("err.ejs", { message: "Page Not Found" });
       return;
@@ -176,12 +175,10 @@ app.get("/admin", async (req, res) => {
 });
 //search Route and search.ejs
 app.get("/search", async (req, res) => {
-  console.log("/search running");
   const query = req.query.query;
   if (!query) return res.render("search", { result: [] });
   const word = query.split(" ");
   const regexes = word.map((word) => new RegExp(word, "i"));
-  console.log(regexes);
   const results = await VideoDatas.find({
     $or: regexes.flatMap((rgx) => [{ title: rgx }, { description: rgx }]),
   });
@@ -222,9 +219,9 @@ app.get(
   wrapasync(async (req, res) => {
     let query = decodeURIComponent(req.params.tags);
     const regex = new RegExp(query, "i");
-    const results = await VideoDatas.find({ "video.tags": regex });
-    if (!results) return;
-
+    const results = await VideoDatas.find({
+      $or: [{ "video.tags": regex }, { title: regex }, { "video.tags": regex }],
+    });
     res.render("categories.ejs", { results, query });
   })
 );

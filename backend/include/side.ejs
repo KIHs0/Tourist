@@ -2,24 +2,23 @@
   <style>
     .containerSidebar {
       z-index: 10;
-      position: sticky;
+      position: static;
       top: 4rem;
       display: flex;
+      overflow-y: hidden;
       overflow-x: auto;
-      white-space: nowrap;
-      /* background: #111; */
-      padding: 0.8rem 1rem;
-      justify-content: center;
+      padding: 0.9rem 1rem;
       gap: 2rem;
+      user-select: none;
+      scrollbar-color: transparent gray;
+      scroll-behavior: smooth;
     }
 
-    .containerSidebar::-webkit-scrollbar {
-      display: none; /* hide scrollbar */
+    .containerSidebar::-webkit-scrollbar-track {
+      cursor: grab;
     }
-
     .category-pill {
       display: inline-block;
-      /* background: #222; */
       color: #fff;
       padding: 0.5rem 1rem;
       border-radius: 20px;
@@ -29,6 +28,7 @@
       flex-shrink: 0;
       transition: 0.3s ease;
       border: 1px solid rgba(255, 255, 255, 0.099);
+      cursor: cell;
       box-shadow: 0 0 2px rgba(255, 255, 255, 0);
     }
 
@@ -39,23 +39,36 @@
     }
 
     @media (max-width: 769px) {
+      .containerSidebar {
+        touch-action: manipulation;
+        gap: 0.4rem;
+        scrollbar-width: none;
+      }
       .category-pill {
         font-size: 0.75rem;
         padding: 0.4rem 0.8rem;
+        touch-action: manipulation;
       }
     }
   </style>
 
   <div class="containerSidebar">
     <div class="category-pill" data-link="/video/categories/kanda">Kanda</div>
+    <div class="category-pill" data-link="/video/categories/desi">Desi</div>
     <div class="category-pill" data-link="/video/categories/teen">Teen</div>
     <div class="category-pill" data-link="/video/categories/nepali">Nepali</div>
     <div class="category-pill" data-link="/video/categories/vagina">Vagina</div>
     <div class="category-pill" data-link="/video/categories/indian">Indian</div>
     <div class="category-pill" data-link="/video/categories/asian">Asian</div>
-    <div class="category-pill" data-link="/video/categories/japanese">
-      Japanese
-    </div>
+    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
+    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
+    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
+    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
+    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
+    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
+    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
+    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
+    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
     <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
   </div>
 

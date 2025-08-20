@@ -9,359 +9,404 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <style>
-      /* Unique class prefix to avoid conflicts */
-      .vs-header {
-        --vs-bg-primary: #0f0f0f;
-        --vs-text-primary: #ffffff;
-        --vs-accent: #ff0000;
-        --vs-hover: #ff4d4d;
-        --vs-bg-secondary: #1a1a1a;
-        --vs-height: 60px;
-        --vs-transition: 0.3s;
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: var(--vs-height);
-        /* background-color: var(--vs-bg-primary); */
-        color: var(--vs-text-primary);
-        z-index: 9999;
-        padding: 0 1rem;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        display: flex;
-        align-items: center;
-      }
+                             /* Unique class prefix to avoid conflicts */
+                             .vs-header {
+                               --vs-bg-primary: #0f0f0f;
+                               --vs-text-primary: #ffffff;
+                               --vs-accent: #ff0000;
+                               --vs-hover: #ff4d4d;
+                               --vs-bg-secondary: #1a1a1a;
+                               /* --vs-height: -60px; */
+                               --vs-transition: 0.3s;
+                               position: static;
+                               left: 0;
+                               margin: 0 auto;
+                               width: 100%;
+                               height: 1rem;
+                               /* height: var(--vs-height); */
+                               /* background-color: var(--vs-bg-primary); */
+                               color: var(--vs-text-primary);
+                               z-index: 9999;
+                               padding: 0 1rem;
+                               box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+                               display: flex;
+                               align-items: flex-end;
+                               justify-content: center;
+                             }
 
-      .vs-navbar {
-        width: 100%;
-        padding: 0;
-        margin: 2rem;
-        overflow: hidden;
-      }
+                             .vs-navbar {
+                               width: 100%;
+                               padding: 0;
+                               overflow: hidden;
+                             }
 
-      .vs-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 1rem;
-      }
+                             .vs-container {
+                               display: flex;
+                               justify-content: space-between;
+                               align-items: center;
+                               width: 100%;
+                               max-width: 1400px;
+                               margin: 0 auto;
+                               padding: 0 1rem;
+                             }
 
-      /* Left Side */
-      .vs-left a {
-        font-size: 1.8rem;
-        font-weight: 800;
-        text-decoration: none;
-        color: var(--vs-accent);
-        transition: color var(--vs-transition) ease;
-        letter-spacing: -1px;
-      }
+                             /* Left Side */
+                             .vs-left a {
+                               font-size: 1.8rem;
+                               font-weight: 800;
+                               text-decoration: none;
+                               color: var(--vs-accent);
+                               transition: color var(--vs-transition) ease;
+                               letter-spacing: -1px;
+                             }
 
-      .vs-left a:hover {
-        color: var(--vs-hover);
-      }
+                             .vs-left a:hover {
+                               color: var(--vs-hover);
+                             }
 
-      /* Search Form */
-      .vs-search-container {
-        position: relative;
-        flex-grow: 1;
-        max-width: 600px;
-        margin: 0 1.5rem;
-        display: flex;
-        align-items: center;
-      }
+                             /* Search Form */
+                             .vs-search-container {
+                               position: relative;
+                               flex-grow: 1;
+                               max-width: 600px;
+                               margin: 0 1.5rem;
+                               display: flex;
+                               align-items: center;
+                             }
 
-      .vs-search-input {
-        width: 100%;
-        padding: 0.6rem 1.2rem;
-        border: 1px solid #333;
-        border-radius: 30px;
-        outline: none;
-        background-color: #121212;
-        color: var(--vs-text-primary);
-        font-size: 0.95rem;
-        transition: all var(--vs-transition) ease;
-      }
+                             .vs-search-input {
+                               width: 100%;
+                               padding: 0.6rem 1.2rem;
+                               border: 1px solid #333;
+                               border-radius: 30px;
+                               outline: none;
+                               background-color: #121212;
+                               color: var(--vs-text-primary);
+                               font-size: 0.95rem;
+                               transition: all var(--vs-transition) ease;
+                             }
 
-      .vs-search-input:focus {
-        /* border-color: var(--vs-accent); */
-        box-shadow: 0 0 0 2px rgba(17, 27, 28, 0.2);
-      }
+                             .vs-search-input:focus {
+                               /* border-color: var(--vs-accent); */
+                               box-shadow: 0 0 0 2px rgba(17, 27, 28, 0.2);
+                             }
 
-      .vs-search-btn {
-        top: 9px;
-        left: 14rem;
-        position: absolute;
-        background: none;
-        border: none;
-        color: #888;
-        cursor: pointer;
-        font-size: 1.1rem;
-        transition: color var(--vs-transition) ease;
-      }
+                             .vs-search-btn {
+                               left: 14rem;
+                               top: 0;
+                               position: absolute;
+                               background: none;
+                               border: none;
+                               color: #888;
+                               cursor: pointer;
+                                 color: red;
+                               transition: all var(--vs-transition) ease;
 
-      .vs-search-btn:hover {
-        color: var(--vs-accent);
-        transition: color var(--vs-transition) ease;
-      }
 
-      /* Right Side Navigation */
-      .vs-right {
-        display: flex;
-        align-items: center;
-        gap: 1.8rem;
-      }
 
-      .vs-nav-item {
-        text-decoration: none;
-        color: var(--vs-text-primary);
-        font-weight: 600;
-        font-size: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        transition: all var(--vs-transition) ease;
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-      }
 
-      .vs-nav-item:hover {
-        color: var(--vs-accent);
-        transform: translateY(-2px);
-      }
+      width: 40px;                           background-color: black;
+      height: 40px;
+                 border-radius:50% ;
+                             }
 
-      .vs-nav-item i {
-        font-size: 1.2rem;
-      }
+                             .vs-search-btn:hover {
+                               color: var(--vs-accent);
+                               transition: color var(--vs-transition) ease;
+                             }
 
-      /* Search Toggle Button */
-      .vs-search-toggle {
-        background: none;
-        border: none;
-        color: var(--vs-text-primary);
-        cursor: pointer;
-        font-size: 1.2rem;
-        padding: 0.5rem;
-        transition: all var(--vs-transition) ease;
-        display: none;
-      }
+                             /* Right Side Navigation */
+                             .vs-right {
+                               display: flex;
+                               align-items: center;
+                               gap: 1.8rem;
+                             }
 
-      .vs-search-toggle:hover {
-        color: var(--vs-accent);
-        transform: scale(1.1);
-      }
+                             .vs-nav-item {
+                               text-decoration: none;
+                               color: var(--vs-text-primary);
+                               font-weight: 600;
+                               font-size: 1rem;
+                               text-transform: uppercase;
+                               letter-spacing: 0.5px;
+                               transition: all var(--vs-transition) ease;
+                               display: flex;
+                               align-items: center;
+                               gap: 0.4rem;
+                             }
 
-      /* User Dropdown */
-      .vs-user-dropdown {
-        position: fixed;
-        top: var(--vs-height);
-        right: 0;
-        width: 300px;
-        height: calc(100vh - var(--vs-height));
-        background-color: var(--vs-bg-primary);
-        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
-        padding: 1.5rem;
-        overflow-y: auto;
-        transform: translateX(100%);
-        transition: transform var(--vs-transition) ease;
-        z-index: 10000;
-        display: none;
-      }
+                             .vs-nav-item:hover {
+                               color: var(--vs-accent);
+                               transform: translateY(-2px);
+                             }
 
-      .vs-user-dropdown.active {
-        transform: translateX(0);
-        display: block;
-      }
+                             .vs-nav-item i {
+                               font-size: 1.2rem;
+                             }
 
-      .vs-close-icon {
-        position: absolute;
-        top: 1.5rem;
-        right: 1.5rem;
-        cursor: pointer;
-        font-size: 1.4rem;
-        transition: color var(--vs-transition) ease;
-      }
+                             /* Search Toggle Button */
+                             .vs-search-toggle {
+                               background: none;
+                               border: none;
+                               color: var(--vs-text-primary);
+                               cursor: pointer;
+                               font-size: 1.2rem;
+                               padding: 0.5rem;
+                               transition: all var(--vs-transition) ease;
+                               display: none;
+                             }
 
-      .vs-close-icon:hover {
-        color: var(--vs-accent);
-      }
+                             .vs-search-toggle:hover {
+                               color: var(--vs-accent);
+                               transform: scale(1.1);
+                             }
 
-      .vs-user-info {
-        margin-top: 1rem;
-      }
+                             /* User Dropdown */
+                             .vs-user-dropdown {
+                               position: fixed;
+                               top: var(--vs-height);
+                               right: 0;
+                               width: 300px;
+                               height: calc(100vh - var(--vs-height));
+                               background-color: var(--vs-bg-primary);
+                               box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+                               padding: 1.5rem;
+                               overflow-y: auto;
+                               transform: translateX(100%);
+                               transition: transform var(--vs-transition) ease;
+                               z-index: 10000;
+                               display: none;
+                             }
 
-      .vs-uploader-info {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-      }
+                             .vs-user-dropdown.active {
+                               transform: translateX(0);
+                               display: block;
+                             }
 
-      .vs-user-img {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin-bottom: 1.2rem;
-        border: 2px solid var(--vs-accent);
-      }
+                             .vs-close-icon {
+                               position: absolute;
+                               top: 1.5rem;
+                               right: 1.5rem;
+                               cursor: pointer;
+                               font-size: 1.4rem;
+                               transition: color var(--vs-transition) ease;
+                             }
 
-      .vs-username {
-        margin-bottom: 1.5rem;
-        font-size: 1.5rem;
-      }
+                             .vs-close-icon:hover {
+                               color: var(--vs-accent);
+                             }
 
-      .vs-user-stats {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-        width: 100%;
-        margin-bottom: 1.5rem;
-      }
+                             .vs-user-info {
+                               margin-top: 1rem;
+                             }
 
-      .vs-user-stats div {
-        background-color: var(--vs-bg-secondary);
-        padding: 0.8rem;
-        border-radius: 8px;
-        text-align: center;
-      }
+                             .vs-uploader-info {
+                               display: flex;
+                               flex-direction: column;
+                               align-items: center;
+                               text-align: center;
+                             }
 
-      .vs-user-stats h4 {
-        font-weight: 500;
-        font-size: 0.95rem;
-      }
+                             .vs-user-img {
+                               width: 100px;
+                               height: 100px;
+                               border-radius: 50%;
+                               object-fit: cover;
+                               margin-bottom: 1.2rem;
+                               border: 2px solid var(--vs-accent);
+                             }
 
-      .vs-logout-btn {
-        display: block;
-        padding: 0.8rem;
-        background-color: var(--vs-accent);
-        color: white;
-        text-decoration: none;
-        border-radius: 8px;
-        transition: background-color var(--vs-transition) ease;
-        text-transform: uppercase;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        text-align: center;
-      }
+                             .vs-username {
+                               margin-bottom: 1.5rem;
+                               font-size: 1.5rem;
+                             }
 
-      .vs-logout-btn:hover {
-        background-color: var(--vs-hover);
-      }
+                             .vs-user-stats {
+                               display: grid;
+                               grid-template-columns: 1fr 1fr;
+                               gap: 1rem;
+                               width: 100%;
+                               margin-bottom: 1.5rem;
+                             }
 
-      /* Mobile Navigation */
-      .vs-mobile-nav {
-        display: none;
-        align-items: center;
-        gap: 1.2rem;
-      }
+                             .vs-user-stats div {
+                               background-color: var(--vs-bg-secondary);
+                               padding: 0.8rem;
+                               border-radius: 8px;
+                               text-align: center;
+                               width: max-content;
+                               height: max-content;
+                             }
+                             .playlist {
+                               touch-action: manipulation;
+                               display: flex;
+                               flex-direction: column;
+                               gap: 3rem;
+                               overflow-y: auto;
+                               overflow-x: hidden;
+                               text-align: left;
+                               width: 200px;
+                               height: 300px;
+                               padding-right: 10px; /* so content doesn't overlap with scrollbar */
+                               scrollbar-width: none;
+                               -ms-overflow-style: none;
+                             }
 
-      .vs-mobile-nav a {
-        color: var(--vs-text-primary);
-        font-size: 1.2rem;
-        text-decoration: none;
-      }
+                             /* Scrollbar width */
+                             .playlist::-webkit-scrollbar {
+                               touch-action: manipulation;
+                               display: none;
+                             }
 
-      .vs-hamburger {
-        cursor: pointer;
-        font-size: 1.4rem;
-        transition: color var(--vs-transition) ease;
-      }
+                             .vs-user-stats h4 {
+                               font-weight: 500;
+                               font-size: 0.95rem;
+                               text-align: center;
+                             }
 
-      .vs-hamburger:hover {
-        color: var(--vs-accent);
-      }
+                             .vs-logout-btn {
+                               display: block;
+                               padding: 0.8rem;
+                               background-color: var(--vs-accent);
+                               color: white;
+                               text-decoration: none;
+                               border-radius: 8px;
+                               transition: background-color var(--vs-transition) ease;
+                               text-transform: uppercase;
+                               font-weight: 600;
+                               letter-spacing: 0.5px;
+                               text-align: center;
+                             }
 
-      /* Mobile Sidebar */
-      .vs-mobile-sidebar {
-        position: fixed;
-        top: var(--vs-height);
-        right: 0;
-        width: 280px;
-        height: calc(100vh - var(--vs-height));
-        background-color: var(--vs-bg-primary);
-        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
-        padding: 1.5rem;
-        overflow-y: auto;
-        transform: translateX(100%);
-        transition: transform var(--vs-transition) ease;
-        z-index: 10000;
-        display: none;
-      }
+                             .vs-logout-btn:hover {
+                               background-color: var(--vs-hover);
+                             }
 
-      .vs-mobile-sidebar.active {
-        transform: translateX(0);
-        display: block;
-      }
+                             /* Mobile Navigation */
+                             .vs-mobile-nav {
+                               display: none;
+                               align-items: center;
+                               gap: 1.2rem;
+                             }
 
-      /* Responsive Styles */
-      @media (max-width: 992px) {
-        .vs-container {
-          gap: 1rem;
-        }
+                             .vs-mobile-nav a {
+                               color: var(--vs-text-primary);
+                               font-size: 1.2rem;
+                               text-decoration: none;
+                             }
 
-        .vs-right {
-          gap: 1.2rem;
-        }
-      }
+                             .vs-hamburger {
+                               cursor: pointer;
+                               font-size: 1.4rem;
+                               transition: color var(--vs-transition) ease;
+                             }
 
-      @media (max-width: 768px) {
-        .vs-search-container {
-          position: absolute;
-          inset: 0 0 0 0;
-          left: 1.5rem;
-          top: 4.5rem;
-          /* top: var(--vs-height); */
-          width: fit-content;
-          padding: 0.8rem 1rem;
-          /* background-color: var(--vs-bg-primary); */
-          /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
-          z-index: 9998;
-          display: none;
-        }
+                             .vs-hamburger:hover {
+                               color: var(--vs-accent);
+                             }
 
-        .vs-search-container.active {
-          display: flex;
-        }
+                             /* Mobile Sidebar */
+                             .vs-mobile-sidebar {
+                               position: fixed;
+                               top: var(--vs-height);
+                               right: 0;
+                               width: 280px;
+                               height: calc(100vh - var(--vs-height));
+                               background-color: var(--vs-bg-primary);
+                               box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+                               padding: 1.5rem;
+                               overflow-y: auto;
+                               transform: translateX(100%);
+                               transition: transform var(--vs-transition) ease;
+                               z-index: 10000;
+                               display: none;
+                             }
 
-        .vs-search-toggle {
-          display: block;
-        }
+                             .vs-mobile-sidebar.active {
+                               transform: translateX(0);
+                               display: block;
+                             }
 
-        .vs-right .vs-nav-text {
-          display: none;
-        }
+                             /* Responsive Styles */
+                             @media (max-width: 992px) {
+                               .vs-container {
+                                 gap: 1rem;
+                               }
 
-        .vs-right {
-          gap: 1.2rem;
-        }
+                               .vs-right {
+                                 gap: 1.2rem;
+                               }
+                             }
 
-        .vs-mobile-nav {
-          display: flex;
-        }
-        .vs-search-btn {
-          top: -0.1rem;
-          font-size: 1.5rem;
-          left: 15rem;
-        }
-      }
+                             @media (max-width: 768px) {
+                               .vs-search-container {
+                                 position: absolute;
+                                 left: -2rem;
+                                 /* top: var(--vs-height); */
+                                 width: fit-content;
+                                 padding: 0.8rem 1rem;
+                                 /* background-color: var(--vs-bg-primary); */
+                                 /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+                                 z-index: 9998;
+                                 display: none;
+                               }
+                               .vs-user-stats {
+                                 margin-left: 4em;
+                               }
+                               .vs-header {
+                                 padding: 0;
+                                 margin: 0;
+                               }
+                               .vs-search-container.active {
+                                 display: flex;
+                               }
+                               .vs-left a {
+                                 font-size: 1.5rem;
+                               }
 
-      @media (max-width: 576px) {
-        .vs-right {
-          gap: 1rem;
-        }
+                               .vs-search-toggle {
+                                 display: block;
+                               }
 
-        .vs-mobile-nav {
-          gap: 1rem;
-        }
+                               .vs-right .vs-nav-text {
+                                 display: none;
+                               }
 
-        .vs-user-dropdown,
-        .vs-mobile-sidebar {
-          width: 100%;
-        }
-      }
+                               .vs-right {
+                                 gap: 1.2rem;
+                               }
+
+                               .vs-mobile-nav {
+                                 display: flex;
+                               }
+                               .vs-search-btn {
+                                font-size: 1.4rem;
+                                 margin-left: .5em;
+                                 top: .7em;
+                                 color: red;
+
+      width: 43px;                           background-color: black;
+      height: 30px;
+                 border-radius:50% ;
+                               }
+
+                             @media (max-width: 576px) {
+                               .vs-right {
+                                 gap: 1rem;
+                               }
+
+                               .vs-mobile-nav {
+                                 gap: 4rem;
+                               }
+
+                               .vs-user-dropdown,
+                               .vs-mobile-sidebar {
+                                 touch-action: manipulation;
+                                 width: 100%;
+                                 padding: 5rem 0;
+                                 margin-top: -4.5rem;
+                               }
+                             }
     </style>
   </head>
   <body>
@@ -429,13 +474,23 @@
                     src="https://as1.ftcdn.net/v2/jpg/05/16/27/58/1000_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
                     alt="user profile"
                   />
-                  <h2 class="vs-username"><strong>Anonymous01</strong></h2>
+                  <h2 class="vs-username">
+                    <strong><%=currUser?.username%></strong>
+                  </h2>
                   <div class="vs-user-stats">
-                    <div><h4>Likes: 1.2K</h4></div>
-                    <div><h4>Subscribers: 543</h4></div>
-                    <div><h4>Playlists: 12</h4></div>
-                    <div><h4>Videos: 37</h4></div>
+                    <div><h4>Subscribers: <%=currUser?.subscribers%></h4></div>
+                    <div><h4>Videos: <%=currUser?.videos%></h4></div>
                   </div>
+                  <%if(currUser?.videos){%>
+                  <div class="playlist">
+                    <span>video1 </span>
+                    <span>video1 </span>
+                    <span>video1 </span>
+                    <span>video1 </span>
+                    <span>video1 </span>
+                    <span>video1 </span>
+                  </div>
+                  <%}%>
                   <a href="/logout" class="vs-logout-btn">LOGOUT</a>
                 </div>
               </div>
@@ -446,28 +501,6 @@
     </header>
 
     <!-- Mobile sidebar -->
-    <div class="vs-mobile-sidebar">
-      <span>
-        <i class="fas fa-xmark vs-close-icon" onclick="toggleSidebar()"></i>
-      </span>
-      <div class="vs-user-info">
-        <div class="vs-uploader-info">
-          <img
-            class="vs-user-img"
-            src="https://as1.ftcdn.net/v2/jpg/05/16/27/58/1000_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
-            alt="user profile"
-          />
-          <h2 class="vs-username"><strong>Anonymous01</strong></h2>
-          <div class="vs-user-stats">
-            <div><h4>Likes: 1.2K</h4></div>
-            <div><h4>Subscribers: 543</h4></div>
-            <div><h4>Playlists: 12</h4></div>
-            <div><h4>Videos: 37</h4></div>
-          </div>
-          <a href="/logout" class="vs-logout-btn">LOGOUT</a>
-        </div>
-      </div>
-    </div>
 
     <script>
       // Toggle profile dropdown
@@ -477,10 +510,10 @@
       }
 
       // Toggle mobile sidebar
-      function toggleSidebar() {
+      /* function toggleSidebar() {
         const sidebar = document.querySelector(".vs-mobile-sidebar");
         sidebar.classList.toggle("active");
-      }
+      } */
 
       // Toggle search bar on mobile
       function toggleSearch() {
@@ -491,7 +524,6 @@
       // Close dropdowns when clicking outside
       document.addEventListener("click", function (event) {
         const profile = document.querySelector(".vs-user-dropdown");
-        const sidebar = document.querySelector(".vs-mobile-sidebar");
         const searchContainer = document.querySelector(".vs-search-container");
 
         if (
@@ -500,14 +532,6 @@
           !event.target.closest(".vs-user-dropdown")
         ) {
           profile.classList.remove("active");
-        }
-
-        if (
-          sidebar.classList.contains("active") &&
-          !event.target.closest(".vs-hamburger") &&
-          !event.target.closest(".vs-mobile-sidebar")
-        ) {
-          sidebar.classList.remove("active");
         }
 
         if (
