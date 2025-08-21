@@ -9,404 +9,424 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <style>
-                             /* Unique class prefix to avoid conflicts */
-                             .vs-header {
-                               --vs-bg-primary: #0f0f0f;
-                               --vs-text-primary: #ffffff;
-                               --vs-accent: #ff0000;
-                               --vs-hover: #ff4d4d;
-                               --vs-bg-secondary: #1a1a1a;
-                               /* --vs-height: -60px; */
-                               --vs-transition: 0.3s;
-                               position: static;
-                               left: 0;
-                               margin: 0 auto;
-                               width: 100%;
-                               height: 1rem;
-                               /* height: var(--vs-height); */
-                               /* background-color: var(--vs-bg-primary); */
-                               color: var(--vs-text-primary);
-                               z-index: 9999;
-                               padding: 0 1rem;
-                               box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-                               display: flex;
-                               align-items: flex-end;
-                               justify-content: center;
-                             }
+      /* Unique class prefix to avoid conflicts */
+      .vs-header {
+        --vs-bg-primary: #0f0f0f;
+        --vs-text-primary: #ffffff;
+        --vs-accent: #ff0000;
+        --vs-hover: #ff4d4d;
+        --vs-bg-secondary: #1a1a1a;
+        /* --vs-height: -60px; */
+        --vs-transition: 0.3s;
+        position: static;
+        left: 0;
+        margin: 0 auto;
+        width: 100%;
+        height: 1rem;
+        /* height: var(--vs-height); */
+        /* background-color: var(--vs-bg-primary); */
+        color: var(--vs-text-primary);
+        z-index: 9999;
+        padding: 0 1rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+      }
 
-                             .vs-navbar {
-                               width: 100%;
-                               padding: 0;
-                               overflow: hidden;
-                             }
+      .vs-navbar {
+        width: 100%;
+        padding: 0;
+        overflow: hidden;
+      }
 
-                             .vs-container {
-                               display: flex;
-                               justify-content: space-between;
-                               align-items: center;
-                               width: 100%;
-                               max-width: 1400px;
-                               margin: 0 auto;
-                               padding: 0 1rem;
-                             }
+      .vs-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
 
-                             /* Left Side */
-                             .vs-left a {
-                               font-size: 1.8rem;
-                               font-weight: 800;
-                               text-decoration: none;
-                               color: var(--vs-accent);
-                               transition: color var(--vs-transition) ease;
-                               letter-spacing: -1px;
-                             }
+      /* Left Side */
+      .vs-left a {
+        font-size: 1.8rem;
+        font-weight: 800;
+        text-decoration: none;
+        color: var(--vs-accent);
+        transition: color var(--vs-transition) ease;
+        letter-spacing: -1px;
+      }
 
-                             .vs-left a:hover {
-                               color: var(--vs-hover);
-                             }
+      .vs-left a:hover {
+        color: var(--vs-hover);
+      }
 
-                             /* Search Form */
-                             .vs-search-container {
-                               position: relative;
-                               flex-grow: 1;
-                               max-width: 600px;
-                               margin: 0 1.5rem;
-                               display: flex;
-                               align-items: center;
-                             }
+      /* Search Form */
+      .vs-search-container {
+        position: relative;
+        flex-grow: 1;
+        max-width: 600px;
+        margin: 0 1.5rem;
+        display: flex;
+        align-items: center;
+      }
 
-                             .vs-search-input {
-                               width: 100%;
-                               padding: 0.6rem 1.2rem;
-                               border: 1px solid #333;
-                               border-radius: 30px;
-                               outline: none;
-                               background-color: #121212;
-                               color: var(--vs-text-primary);
-                               font-size: 0.95rem;
-                               transition: all var(--vs-transition) ease;
-                             }
+      .vs-search-input {
+        width: 100%;
+        padding: 0.6rem 1.2rem;
+        border: 1px solid #333;
+        border-radius: 30px;
+        outline: none;
+        background-color: #121212;
+        color: var(--vs-text-primary);
+        font-size: 0.95rem;
+        transition: all var(--vs-transition) ease;
+      }
 
-                             .vs-search-input:focus {
-                               /* border-color: var(--vs-accent); */
-                               box-shadow: 0 0 0 2px rgba(17, 27, 28, 0.2);
-                             }
+      .vs-search-input:focus {
+        /* border-color: var(--vs-accent); */
+        box-shadow: 0 0 0 2px rgba(17, 27, 28, 0.2);
+      }
 
-                             .vs-search-btn {
-                               left: 14rem;
-                               top: 0;
-                               position: absolute;
-                               background: none;
-                               border: none;
-                               color: #888;
-                               cursor: pointer;
-                                 color: red;
-                               transition: all var(--vs-transition) ease;
+      .vs-search-btn {
+        left: 14rem;
+        top: 0;
+        position: absolute;
+        background: none;
+        border: none;
+        color: #888;
+        cursor: pointer;
+        color: red;
+        transition: all var(--vs-transition) ease;
 
+        width: 40px;
+        background-color: black;
+        height: 40px;
+        border-radius: 50%;
+      }
 
+      .vs-search-btn:hover {
+        color: var(--vs-accent);
+        transition: color var(--vs-transition) ease;
+      }
 
+      /* Right Side Navigation */
+      .vs-right {
+        display: flex;
+        align-items: center;
+        gap: 1.8rem;
+      }
 
-      width: 40px;                           background-color: black;
-      height: 40px;
-                 border-radius:50% ;
-                             }
+      .vs-nav-item {
+        text-decoration: none;
+        color: var(--vs-text-primary);
+        font-weight: 600;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all var(--vs-transition) ease;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
 
-                             .vs-search-btn:hover {
-                               color: var(--vs-accent);
-                               transition: color var(--vs-transition) ease;
-                             }
+      .vs-nav-item:hover {
+        color: var(--vs-accent);
+        transform: translateY(-2px);
+      }
 
-                             /* Right Side Navigation */
-                             .vs-right {
-                               display: flex;
-                               align-items: center;
-                               gap: 1.8rem;
-                             }
+      .vs-nav-item i {
+        font-size: 1.2rem;
+      }
 
-                             .vs-nav-item {
-                               text-decoration: none;
-                               color: var(--vs-text-primary);
-                               font-weight: 600;
-                               font-size: 1rem;
-                               text-transform: uppercase;
-                               letter-spacing: 0.5px;
-                               transition: all var(--vs-transition) ease;
-                               display: flex;
-                               align-items: center;
-                               gap: 0.4rem;
-                             }
+      /* Search Toggle Button */
+      .vs-search-toggle {
+        background: none;
+        border: none;
+        color: var(--vs-text-primary);
+        cursor: pointer;
+        font-size: 1.2rem;
+        padding: 0.5rem;
+        transition: all var(--vs-transition) ease;
+        display: none;
+      }
 
-                             .vs-nav-item:hover {
-                               color: var(--vs-accent);
-                               transform: translateY(-2px);
-                             }
+      .vs-search-toggle:hover {
+        color: var(--vs-accent);
+        transform: scale(1.1);
+      }
 
-                             .vs-nav-item i {
-                               font-size: 1.2rem;
-                             }
+      /* User Dropdown */
+      .vs-user-dropdown {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 350px;
+        margin: 0 auto;
+        /* height: calc(100vh - var(--vs-height)); */
+        height: 100vh;
+        background-color: var(--vs-bg-primary);
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+        padding: 1.5rem;
+        overflow-y: auto;
+        transform: translateX(100%);
+        transition: transform var(--vs-transition) ease;
+        z-index: 100;
+        display: none;
+      }
 
-                             /* Search Toggle Button */
-                             .vs-search-toggle {
-                               background: none;
-                               border: none;
-                               color: var(--vs-text-primary);
-                               cursor: pointer;
-                               font-size: 1.2rem;
-                               padding: 0.5rem;
-                               transition: all var(--vs-transition) ease;
-                               display: none;
-                             }
+      .vs-user-dropdown.active {
+        transform: translateX(0);
+        display: block;
+      }
 
-                             .vs-search-toggle:hover {
-                               color: var(--vs-accent);
-                               transform: scale(1.1);
-                             }
+      .vs-close-icon {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        cursor: pointer;
+        font-size: 1.4rem;
+        transition: color var(--vs-transition) ease;
+      }
 
-                             /* User Dropdown */
-                             .vs-user-dropdown {
-                               position: fixed;
-                               top: var(--vs-height);
-                               right: 0;
-                               width: 300px;
-                               height: calc(100vh - var(--vs-height));
-                               background-color: var(--vs-bg-primary);
-                               box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
-                               padding: 1.5rem;
-                               overflow-y: auto;
-                               transform: translateX(100%);
-                               transition: transform var(--vs-transition) ease;
-                               z-index: 10000;
-                               display: none;
-                             }
+      .vs-close-icon:hover {
+        color: var(--vs-accent);
+      }
 
-                             .vs-user-dropdown.active {
-                               transform: translateX(0);
-                               display: block;
-                             }
+      .vs-user-info {
+        margin-top: 1rem;
+      }
 
-                             .vs-close-icon {
-                               position: absolute;
-                               top: 1.5rem;
-                               right: 1.5rem;
-                               cursor: pointer;
-                               font-size: 1.4rem;
-                               transition: color var(--vs-transition) ease;
-                             }
+      .vs-uploader-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
 
-                             .vs-close-icon:hover {
-                               color: var(--vs-accent);
-                             }
+      .vs-user-img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 1.2rem;
+        border: 2px solid var(--vs-accent);
+      }
 
-                             .vs-user-info {
-                               margin-top: 1rem;
-                             }
+      .vs-username {
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+      }
 
-                             .vs-uploader-info {
-                               display: flex;
-                               flex-direction: column;
-                               align-items: center;
-                               text-align: center;
-                             }
+      .vs-user-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        width: 100%;
+        margin-bottom: 1.5rem;
+      }
 
-                             .vs-user-img {
-                               width: 100px;
-                               height: 100px;
-                               border-radius: 50%;
-                               object-fit: cover;
-                               margin-bottom: 1.2rem;
-                               border: 2px solid var(--vs-accent);
-                             }
+      .vs-user-stats div {
+        background-color: var(--vs-bg-secondary);
+        padding: 0.8rem;
+        border-radius: 8px;
+        text-align: center;
+        width: max-content;
+        height: max-content;
+      }
+      .playlist {
+        touch-action: manipulation;
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+        overflow-y: auto;
+        overflow-x: hidden;
+        text-align: left;
+        width: 200px;
+        height: 300px;
+        padding-right: 10px; /* so content doesn't overlap with scrollbar */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
 
-                             .vs-username {
-                               margin-bottom: 1.5rem;
-                               font-size: 1.5rem;
-                             }
+      .playlist span {
+        flex: 0 0 auto; /* don’t shrink, keep width */
+      }
 
-                             .vs-user-stats {
-                               display: grid;
-                               grid-template-columns: 1fr 1fr;
-                               gap: 1rem;
-                               width: 100%;
-                               margin-bottom: 1.5rem;
-                             }
+      .playlist img {
+        aspect-ratio: 1/1;
+        width: 100px;
+        height: 100px;
+        object-fit: cover; /* crop to fit */
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
 
-                             .vs-user-stats div {
-                               background-color: var(--vs-bg-secondary);
-                               padding: 0.8rem;
-                               border-radius: 8px;
-                               text-align: center;
-                               width: max-content;
-                               height: max-content;
-                             }
-                             .playlist {
-                               touch-action: manipulation;
-                               display: flex;
-                               flex-direction: column;
-                               gap: 3rem;
-                               overflow-y: auto;
-                               overflow-x: hidden;
-                               text-align: left;
-                               width: 200px;
-                               height: 300px;
-                               padding-right: 10px; /* so content doesn't overlap with scrollbar */
-                               scrollbar-width: none;
-                               -ms-overflow-style: none;
-                             }
+      .playlist img:hover {
+        transform: scale(1.05); /* zoom on hover */
+      }
+      /* Scrollbar width */
+      .playlist::-webkit-scrollbar {
+        touch-action: manipulation;
+        display: none;
+      }
 
-                             /* Scrollbar width */
-                             .playlist::-webkit-scrollbar {
-                               touch-action: manipulation;
-                               display: none;
-                             }
+      .vs-user-stats h4 {
+        font-weight: 500;
+        font-size: 0.95rem;
+        text-align: center;
+      }
 
-                             .vs-user-stats h4 {
-                               font-weight: 500;
-                               font-size: 0.95rem;
-                               text-align: center;
-                             }
+      .vs-logout-btn {
+        display: block;
+        padding: 0.8rem;
+        background-color: var(--vs-accent);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background-color var(--vs-transition) ease;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-align: center;
+      }
 
-                             .vs-logout-btn {
-                               display: block;
-                               padding: 0.8rem;
-                               background-color: var(--vs-accent);
-                               color: white;
-                               text-decoration: none;
-                               border-radius: 8px;
-                               transition: background-color var(--vs-transition) ease;
-                               text-transform: uppercase;
-                               font-weight: 600;
-                               letter-spacing: 0.5px;
-                               text-align: center;
-                             }
+      .vs-logout-btn:hover {
+        background-color: var(--vs-hover);
+      }
 
-                             .vs-logout-btn:hover {
-                               background-color: var(--vs-hover);
-                             }
+      /* Mobile Navigation */
+      .vs-mobile-nav {
+        display: none;
+        align-items: center;
+        gap: 1.2rem;
+      }
 
-                             /* Mobile Navigation */
-                             .vs-mobile-nav {
-                               display: none;
-                               align-items: center;
-                               gap: 1.2rem;
-                             }
+      .vs-mobile-nav a {
+        color: var(--vs-text-primary);
+        font-size: 1.2rem;
+        text-decoration: none;
+      }
 
-                             .vs-mobile-nav a {
-                               color: var(--vs-text-primary);
-                               font-size: 1.2rem;
-                               text-decoration: none;
-                             }
+      .vs-hamburger {
+        cursor: pointer;
+        font-size: 1.4rem;
+        transition: color var(--vs-transition) ease;
+      }
 
-                             .vs-hamburger {
-                               cursor: pointer;
-                               font-size: 1.4rem;
-                               transition: color var(--vs-transition) ease;
-                             }
+      .vs-hamburger:hover {
+        color: var(--vs-accent);
+      }
 
-                             .vs-hamburger:hover {
-                               color: var(--vs-accent);
-                             }
+      /* Mobile Sidebar */
+      .vs-mobile-sidebar {
+        position: fixed;
+        top: var(--vs-height);
+        right: 0;
+        width: 280px;
+        height: calc(100vh - var(--vs-height));
+        background-color: var(--vs-bg-primary);
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+        padding: 1.5rem;
+        overflow-y: auto;
+        transform: translateX(100%);
+        transition: transform var(--vs-transition) ease;
+        z-index: 10000;
+        display: none;
+      }
 
-                             /* Mobile Sidebar */
-                             .vs-mobile-sidebar {
-                               position: fixed;
-                               top: var(--vs-height);
-                               right: 0;
-                               width: 280px;
-                               height: calc(100vh - var(--vs-height));
-                               background-color: var(--vs-bg-primary);
-                               box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
-                               padding: 1.5rem;
-                               overflow-y: auto;
-                               transform: translateX(100%);
-                               transition: transform var(--vs-transition) ease;
-                               z-index: 10000;
-                               display: none;
-                             }
+      .vs-mobile-sidebar.active {
+        transform: translateX(0);
+        display: block;
+      }
 
-                             .vs-mobile-sidebar.active {
-                               transform: translateX(0);
-                               display: block;
-                             }
+      /* Responsive Styles */
+      @media (max-width: 992px) {
+        .vs-container {
+          gap: 1rem;
+        }
 
-                             /* Responsive Styles */
-                             @media (max-width: 992px) {
-                               .vs-container {
-                                 gap: 1rem;
-                               }
+        .vs-right {
+          gap: 1.2rem;
+        }
+      }
 
-                               .vs-right {
-                                 gap: 1.2rem;
-                               }
-                             }
+      @media (max-width: 768px) {
+        .vs-search-container {
+          position: absolute;
+          left: -2rem;
+          /* top: var(--vs-height); */
+          width: fit-content;
+          padding: 0.8rem 1rem;
+          /* background-color: var(--vs-bg-primary); */
+          /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+          z-index: 9998;
+          display: none;
+        }
+        .vs-user-stats {
+          margin-left: 4em;
+        }
+        .vs-header {
+          padding: 0;
+          margin: 0;
+        }
+        .vs-search-container.active {
+          display: flex;
+        }
+        .vs-left a {
+          font-size: 1.5rem;
+        }
 
-                             @media (max-width: 768px) {
-                               .vs-search-container {
-                                 position: absolute;
-                                 left: -2rem;
-                                 /* top: var(--vs-height); */
-                                 width: fit-content;
-                                 padding: 0.8rem 1rem;
-                                 /* background-color: var(--vs-bg-primary); */
-                                 /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
-                                 z-index: 9998;
-                                 display: none;
-                               }
-                               .vs-user-stats {
-                                 margin-left: 4em;
-                               }
-                               .vs-header {
-                                 padding: 0;
-                                 margin: 0;
-                               }
-                               .vs-search-container.active {
-                                 display: flex;
-                               }
-                               .vs-left a {
-                                 font-size: 1.5rem;
-                               }
+        .vs-search-toggle {
+          display: block;
+        }
 
-                               .vs-search-toggle {
-                                 display: block;
-                               }
+        .vs-right .vs-nav-text {
+          display: none;
+        }
 
-                               .vs-right .vs-nav-text {
-                                 display: none;
-                               }
+        .vs-right {
+          gap: 1.2rem;
+        }
 
-                               .vs-right {
-                                 gap: 1.2rem;
-                               }
+        .vs-mobile-nav {
+          display: flex;
+        }
+        .vs-search-btn {
+          font-size: 1.4rem;
+          margin-left: 0.5em;
+          top: 0.7em;
+          color: red;
 
-                               .vs-mobile-nav {
-                                 display: flex;
-                               }
-                               .vs-search-btn {
-                                font-size: 1.4rem;
-                                 margin-left: .5em;
-                                 top: .7em;
-                                 color: red;
+          width: 43px;
+          background-color: black;
+          height: 30px;
+          border-radius: 50%;
+        }
 
-      width: 43px;                           background-color: black;
-      height: 30px;
-                 border-radius:50% ;
-                               }
+        @media (max-width: 576px) {
+          .vs-right {
+            gap: 1rem;
+          }
 
-                             @media (max-width: 576px) {
-                               .vs-right {
-                                 gap: 1rem;
-                               }
+          .vs-mobile-nav {
+            gap: 4rem;
+          }
 
-                               .vs-mobile-nav {
-                                 gap: 4rem;
-                               }
-
-                               .vs-user-dropdown,
-                               .vs-mobile-sidebar {
-                                 touch-action: manipulation;
-                                 width: 100%;
-                                 padding: 5rem 0;
-                                 margin-top: -4.5rem;
-                               }
-                             }
+          .vs-user-dropdown,
+          .vs-mobile-sidebar {
+            touch-action: manipulation;
+            width: 100%;
+            padding: 5rem 0;
+            justify-content: center;
+            text-align: center;
+            /* margin-top: -4.5rem; */
+          }
+        }
+      }
     </style>
   </head>
   <body>
@@ -481,16 +501,21 @@
                     <div><h4>Subscribers: <%=currUser?.subscribers%></h4></div>
                     <div><h4>Videos: <%=currUser?.videos%></h4></div>
                   </div>
-                  <%if(currUser?.videos){%>
+                  <% if (currUser && currUser.posts && currUser.posts.length >
+                  0) { %>
                   <div class="playlist">
-                    <span>video1 </span>
-                    <span>video1 </span>
-                    <span>video1 </span>
-                    <span>video1 </span>
-                    <span>video1 </span>
-                    <span>video1 </span>
+                    <% currUser.posts.forEach(post => { %>
+                    <span>
+                      <img
+                        src="<%= post.video.thumbnailUrl %>"
+                        alt="<%= post.title %> "
+                      />
+                    </span>
+                    <% }) %>
                   </div>
-                  <%}%>
+                  <% } else { %>
+                  <p>No videos uploaded yet.</p>
+                  <% } %>
                   <a href="/logout" class="vs-logout-btn">LOGOUT</a>
                 </div>
               </div>

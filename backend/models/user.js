@@ -11,10 +11,12 @@ const User = new Schema({
     type: Number,
     default: 0,
   },
-  post: {
-    type: Schema.Types.ObjectId,
-    ref: "VideoData",
-  },
+  posts: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "VideoData",
+    },
+  ],
   videos: {
     type: Number,
     default: 0,

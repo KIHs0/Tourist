@@ -144,7 +144,7 @@ async function bulkUploadAdmin() {
           /\\/g,
           "/"
         )}`;
-        newvid.video.owner = "Anonymous";
+        // newvid.video.owner = "Anonymous";
         newvid.video.thumbnailUrl = `https://tourist-h76q.onrender.com/thumbnail/${newname}_compressedthumbnail.jpg`;
         newvid.video.filename = newname;
         newvid.video.tags = genTags();

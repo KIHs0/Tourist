@@ -80,6 +80,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
+const user = require("./backend/models/user");
 const store = MongoStore.create({
   mongoUrl: process.env.MONGO_URL,
   touchAfter: 24 * 3600,
@@ -120,10 +121,25 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 //locals middleware
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   res.locals.successMsg = req.flash("success");
   res.locals.errorMsg = req.flash("error");
-  res.locals.currUser = req.user;
+
+  if (req.user) {
+    try {
+      const populatedUser = await User.findById(req.user._id)
+        .populate("posts")
+        .exec();
+      res.locals.currUser = populatedUser;
+      console.log(populatedUser);
+    } catch (err) {
+      console.error("Error populating user:", err);
+      res.locals.currUser = req.user; // fallback
+    }
+  } else {
+    res.locals.currUser = null;
+  }
+
   next();
 });
 //index Route and home.ejs
@@ -228,82 +244,84 @@ app.get(
 // new video Route and compression of video using ffmpeg
 app.get("/newvideo", (req, res) => res.render("add.ejs"));
 app.post("/newvideo", upload.single("video"), async (req, res, next) => {
-  const inputPath = req.file.path;
-  const timeStamp = new Date().toISOString();
-  const originalname = path.parse(req.file.originalname).name.split(" ");
-  let newname = originalname?.[0] ?? "" + originalname?.[1] ?? "";
-  const outputPath = path.join(cup, `${newname}_compressed.mp4`);
-  const thumbPath = path.join(thumbnail, `${newname}_compressedthumbnail.jpg`);
-  function convertToHLS(inputPath, outputFolder, videoName) {
-    return new Promise((resolve, reject) => {
-      const outDir = path.join(outputFolder, videoName);
-      fs.mkdirSync(outDir, { recursive: true });
-
-      const cmd = `${ffmpegPath} -i "${inputPath}" -c:v libx264 -preset veryfast -crf 21 -c:a aac -b:a 128k -ac 2 -hls_time 6 -hls_playlist_type vod -hls_flags independent_segments -hls_segment_filename "${outDir}/seg_%03d.ts" "${outDir}/index.m3u8"`;
-
-      exec(cmd, (error) => {
-        console.log("exec hls cmd executing");
-        if (error) {
-          console.log(error);
-          return reject(error);
-        }
-        resolve({ m3u8Path: `${outDir}/index.m3u8` });
-      });
-    });
-  }
-
-  function ffmpegfx(inputPath, outputPath) {
-    return new Promise((resolve, reject) => {
-      ffmpeg(inputPath)
-        .outputOptions([
-          "-c:v libx264", // H.264 video codec
-          "-preset veryfast", // Compression speed/quality balance
-          "-crf 28", // Lower means better quality (18–28)
-          "-c:a aac", // Audio codec
-          "-b:a 128k",
-        ])
-
-        .on("end", async () => {
-          try {
-            console.log("compressfinished");
-
-            ffmpeg(inputPath)
-              .screenshots({
-                count: 1,
-                folder: path.dirname(thumbPath),
-                filename: path.basename(
-                  `${originalname}_compressedthumbnail.jpg`
-                ),
-                size: "320x240",
-              })
-              .on("end", async () => {
-                console.log("thumbnail Generated");
-                resolve();
-              })
-              .on("error", (err) => {
-                console.log("compressError", err);
-                reject(new ErrorExpress("thumbnail not generated"));
-              });
-          } catch (err) {
-            reject(new ErrorExpress("failed  upl thumbnai at cloudinary"));
-          }
-        })
-        .on("end", (req, res) => {
-          console.log("finished doing ffmpegfx");
-        })
-        .on("error", (err) => {
-          reject(new ErrorExpress("failed upl vidoe at cloudinary"));
-        })
-        .save(outputPath);
-    });
-  }
   try {
+    const inputPath = req.file.path;
+    const timeStamp = new Date().toISOString();
+    const originalname = path.parse(req.file.originalname).name.split(" ");
+    let newname = originalname?.[0] ?? "" + originalname?.[1] ?? "";
+    const outputPath = path.join(cup, `${newname}_compressed.mp4`);
+    const thumbPath = path.join(
+      thumbnail,
+      `${newname}_compressedthumbnail.jpg`
+    );
+    function convertToHLS(inputPath, outputFolder, videoName) {
+      return new Promise((resolve, reject) => {
+        const outDir = path.join(outputFolder, videoName);
+        fs.mkdirSync(outDir, { recursive: true });
+
+        const cmd = `${ffmpegPath} -i "${inputPath}" -c:v libx264 -preset veryfast -crf 21 -c:a aac -b:a 128k -ac 2 -hls_time 6 -hls_playlist_type vod -hls_flags independent_segments -hls_segment_filename "${outDir}/seg_%03d.ts" "${outDir}/index.m3u8"`;
+
+        exec(cmd, (error) => {
+          console.log("exec hls cmd executing");
+          if (error) {
+            console.log(error);
+            return reject(error);
+          }
+          resolve({ m3u8Path: `${outDir}/index.m3u8` });
+        });
+      });
+    }
+
+    function ffmpegfx(inputPath, outputPath) {
+      return new Promise((resolve, reject) => {
+        ffmpeg(inputPath)
+          .outputOptions([
+            "-c:v libx264", // H.264 video codec
+            "-preset veryfast", // Compression speed/quality balance
+            "-crf 28", // Lower means better quality (18–28)
+            "-c:a aac", // Audio codec
+            "-b:a 128k",
+          ])
+
+          .on("end", async () => {
+            try {
+              console.log("compressfinished");
+
+              ffmpeg(inputPath)
+                .screenshots({
+                  count: 1,
+                  folder: path.dirname(thumbPath),
+                  filename: path.basename(
+                    `${originalname}_compressedthumbnail.jpg`
+                  ),
+                  size: "320x240",
+                })
+                .on("end", async () => {
+                  console.log("thumbnail Generated");
+                  resolve();
+                })
+                .on("error", (err) => {
+                  console.log("compressError", err);
+                  reject(new ErrorExpress("thumbnail not generated"));
+                });
+            } catch (err) {
+              reject(new ErrorExpress("failed  upl thumbnai at cloudinary"));
+            }
+          })
+          .on("end", (req, res) => {
+            console.log("finished doing ffmpegfx");
+          })
+          .on("error", (err) => {
+            reject(new ErrorExpress("failed upl vidoe at cloudinary"));
+          })
+          .save(outputPath);
+      });
+    }
     console.log("fcx called");
     req.flash("success", "video is uploading ...");
     res.redirect("/");
     await ffmpegfx(inputPath, outputPath);
     const result0 = await convertToHLS(outputPath, "hls/videos", newname);
-    console.log(result0.m3u8Path);
     const newvid = new VideoDatas(req.body.video);
     newvid.title = req.body.video.title || "new video !!!";
     newvid.description = `Uploaded at ${new Date().toLocaleString()}`;
@@ -312,13 +330,15 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
       "/"
     )}`;
     newvid.video.tags = req.body.video.categories;
-    newvid.video.owner = req.body.video.name || "Anonymous";
-
+    newvid.video.owner = req.user;
     newvid.video.thumbnailUrl = `https://tourist-h76q.onrender.com/thumbnail/${originalname}_compressedthumbnail.jpg`;
-    newvid.video.filename = originalname;
-    await newvid.save().then((thenres) => {
-      console.log(thenres);
-    });
+    newvid.video.filename = newname;
+    const vid = await newvid.save();
+    if (req.user) {
+      const user = await User.findById(req.user._id);
+      user.posts.push(vid._id);
+      await user.save();
+    }
     // await Promise.all([
     //   await fs.promises.rm(uploads, { recursive: true, force: true }),
     //   await fs.promises.rm(cup, { recursive: true, force: true }),
@@ -337,7 +357,7 @@ app.post("/newvideo", upload.single("video"), async (req, res, next) => {
     //     console.log("hls dlted");
     //   }
     // });
-    req.flash("success", "Video Uploaded ⭐");
+    // req.flash("success", "Video Uploaded ⭐");
     process.exit(0);
   } catch (err) {
     console.log("upload err", err);
