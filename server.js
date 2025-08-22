@@ -108,8 +108,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(
   require("cors")({
-    // origin: "https://tourist-h76q.onrender.com", // or "*" for testing
-    origin: "*",
+    origin: "https://tourist-h76q.onrender.com", // or "*" for testing
+    // origin: "*",
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   })
