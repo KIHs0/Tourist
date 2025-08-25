@@ -250,3 +250,143 @@ a {
     font-size: 0.7rem;
   }
 }
+
+/* css for hshow.ejs and home.ejs */
+/* Container for all video cards */
+/* Container for all video cards */
+
+.video-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  max-width: 1400px; /* limit the width */
+  margin: 0 auto; /* center horizontally */
+  padding: 0 1rem; /* spacing inside */
+}
+
+/* Individual video card */
+.video-card {
+  background: #1e1e1e;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  aspect-ratio: 1/1;
+}
+
+.video-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.video-card a {
+  color: inherit;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Thumbnail section */
+.thumbnail {
+  width: 100%;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  background: #000;
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Video details */
+.video-details {
+  padding: 12px;
+}
+
+.video-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 6px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.video-description {
+  font-size: 0.85rem;
+  color: #aaa;
+  max-height: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Pagination styling */
+.paginations {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 30px 0;
+  touch-action: manipulation;
+}
+
+.page-btns {
+  touch-action: manipulation;
+  display: flex;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  background: #333;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.page-btns:hover {
+  background: #555;
+  transform: translateY(-2px);
+}
+
+.page-btns.active {
+  background: #ff6600; /* highlight color */
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .video-container {
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 12px;
+    padding: 12px;
+  }
+  @media (max-width: 390px) {
+    .video-container {
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      padding: 12px;
+    }
+  }
+  .video-card {
+    aspect-ratio: 1/1;
+  }
+  .thumbnail img {
+    object-fit: fill;
+  }
+
+  .video-title {
+    font-size: 0.6rem;
+  }
+
+  .video-description {
+    font-size: 0.55rem;
+  }
+}

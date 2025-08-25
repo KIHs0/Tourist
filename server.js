@@ -226,7 +226,12 @@ app.get(
   wrapasync(async (req, res) => {
     const { id } = req.params;
     const vid = await VideoDatas.findById(id);
-    res.render("show.ejs", { vid });
+    const data = await VideoDatas.find({ _id: { $ne: id } }).sort({
+      createdAt: -1,
+      _id: -1,
+    });
+
+    res.render("show.ejs", { vid, data });
   })
 );
 // categories route and cateogires.ejs

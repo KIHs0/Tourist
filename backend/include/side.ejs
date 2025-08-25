@@ -3,20 +3,39 @@
     .containerSidebar {
       z-index: 10;
       position: static;
-      top: 4rem;
       display: flex;
-      overflow-y: hidden;
       overflow-x: auto;
-      padding: 0.9rem 1rem;
-      gap: 2rem;
+      padding: 1rem;
+      top: 0;
+      gap: 1.5rem;
       user-select: none;
-      scrollbar-color: transparent gray;
       scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
     }
 
-    .containerSidebar::-webkit-scrollbar-track {
-      cursor: grab;
+    /* Hide scrollbar by default */
+    .containerSidebar::-webkit-scrollbar {
+      background: transparent;
     }
+
+    /* Invisible by default */
+    .containerSidebar::-webkit-scrollbar-thumb {
+      background: transparent;
+      border-radius: 10px;
+      scrollbar-width: none;
+      transition: background 0.1s ease-out;
+    }
+
+    /* On hover over the whole container, scrollbar thumb appears */
+    .containerSidebar:hover::-webkit-scrollbar-thumb {
+      scrollbar-width: 2px;
+      background: rgba(120, 120, 120, 0.6);
+    }
+
+    .containerSidebar:hover::-webkit-scrollbar-thumb:hover {
+      background: rgba(80, 80, 80, 0.8);
+    }
+
     .category-pill {
       display: inline-block;
       color: #fff;
@@ -60,16 +79,113 @@
     <div class="category-pill" data-link="/video/categories/vagina">Vagina</div>
     <div class="category-pill" data-link="/video/categories/indian">Indian</div>
     <div class="category-pill" data-link="/video/categories/asian">Asian</div>
-    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
-    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
-    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
-    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
-    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
-    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
-    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
-    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
-    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
-    <div class="category-pill" data-link="/video/categories/bbw">BBW</div>
+    <div class="category-pill" data-link="/video/categories/Russian">
+      Russian
+    </div>
+    <div class="category-pill" data-link="/video/categories/sexy">sexy</div>
+    <div class="category-pill" data-link="/video/categories/cheating">
+      cheating
+    </div>
+    <div class="category-pill" data-link="/video/categories/milf">milf</div>
+    <div class="category-pill" data-link="/video/categories/Latina">Latina</div>
+    <div class="category-pill" data-link="/video/categories/redhair">
+      RedHair
+    </div>
+    <div class="category-pill" data-link="/video/categories/Petite">Petite</div>
+    <div class="category-pill" data-link="/video/categories/blonde">Blonde</div>
+    <div class="category-pill" data-link="/video/categories/public">public</div>
+    <div class="category-pill" data-link="/video/categories/bbc">BBC</div>
+    <div class="category-pill" data-link="/video/categories/naked">naked</div>
+    <div class="category-pill" data-link="/video/categories/hot">hot</div>
+    <div class="category-pill" data-link="/video/categories/rape">rape</div>
+    <div class="category-pill" data-link="/video/categories/gangbang">
+      gangbang
+    </div>
+    <div class="category-pill" data-link="/video/categories/gay">gay</div>
+    <div class="category-pill" data-link="/video/categories/threesome">
+      threesome
+    </div>
+    <div class="category-pill" data-link="/video/categories/rough">rough</div>
+    <div class="category-pill" data-link="/video/categories/passionate">
+      Passionate
+    </div>
+    <div class="category-pill" data-link="/video/categories/school">school</div>
+    <div class="category-pill" data-link="/video/categories/teacher">
+      teacher
+    </div>
+    <div class="category-pill" data-link="/video/categories/stepsister">
+      stepsister
+    </div>
+    <div class="category-pill" data-link="/video/categories/cousin">cousin</div>
+    <div class="category-pill" data-link="/video/categories/ass">ass</div>
+    <div class="category-pill" data-link="/video/categories/anal">anal</div>
+    <div class="category-pill" data-link="/video/categories/doggy">Doggy</div>
+    <div class="category-pill" data-link="/video/categories/cowgirl">
+      Cowgirl
+    </div>
+    <div class="category-pill" data-link="/video/categories/reversecowgirl">
+      reverse
+    </div>
+    <div class="category-pill" data-link="/video/categories/hard">hard</div>
+    <div class="category-pill" data-link="/video/categories/soft">soft</div>
+    <div class="category-pill" data-link="/video/categories/condom">condom</div>
+    <div class="category-pill" data-link="/video/categories/face">face</div>
+    <div class="category-pill" data-link="/video/categories/cum">cum</div>
+    <div class="category-pill" data-link="/video/categories/squirt">squirt</div>
+    <div class="category-pill" data-link="/video/categories/masturbation">
+      masturbation
+    </div>
+    <div class="category-pill" data-link="/video/categories/fingering">
+      fingering
+    </div>
+    <div class="category-pill" data-link="/video/categories/romance">
+      romance
+    </div>
+    <div class="category-pill" data-link="/video/categories/stepbrother">
+      step-Brother
+    </div>
+    <div class="category-pill" data-link="/video/categories/daddy">daddy</div>
+    <div class="category-pill" data-link="/video/categories/babysitter">
+      babysitter
+    </div>
+    <div class="category-pill" data-link="/video/categories/brunette">
+      brunette
+    </div>
+    <div class="category-pill" data-link="/video/categories/chick">chick</div>
+    <div class="category-pill" data-link="/video/categories/redhair">
+      redhair
+    </div>
+    <div class="category-pill" data-link="/video/categories/18eighteen">
+      18year
+    </div>
+    <div class="category-pill" data-link="/video/categories/amateur">
+      amateur
+    </div>
+    <div class="category-pill" data-link="/video/categories/kiss">Kiss</div>
+    <div class="category-pill" data-link="/video/categories/facial">facial</div>
+    <div class="category-pill" data-link="/video/categories/intense">
+      intense
+    </div>
+    <div class="category-pill" data-link="/video/categories/celebrity">
+      celebrity
+    </div>
+    <div class="category-pill" data-link="/video/categories/deep">deep</div>
+    <div class="category-pill" data-link="/video/categories/blowjob">
+      blowjob
+    </div>
+    <div class="category-pill" data-link="/video/categories/deepthroat">
+      deepthroat
+    </div>
+    <div class="category-pill" data-link="/video/categories/dirty">dirty</div>
+    <div class="category-pill" data-link="/video/categories/car">car</div>
+    <div class="category-pill" data-link="/video/categories/tits">tits</div>
+    <div class="category-pill" data-link="/video/categories/toys">toys</div>
+    <div class="category-pill" data-link="/video/categories/fetish">fetish</div>
+    <div class="category-pill" data-link="/video/categories/wife">wife</div>
+    <div class="category-pill" data-link="/video/categories/slut">slut</div>
+    <div class="category-pill" data-link="/video/categories/mature">mature</div>
+    <div class="category-pill" data-link="/video/categories/new">new</div>
+    <div class="category-pill" data-link="/video/categories/bbw">FUCK</div>
   </div>
 
   <script>

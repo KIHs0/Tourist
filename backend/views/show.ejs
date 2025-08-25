@@ -3,9 +3,10 @@
   .vidContainer {
     /* border: 2px solid white; */
     width: 100vw;
-    min-height: 100vh;
+    min-height: 70vh;
     margin: 0 auto;
     position: relative;
+    margin-bottom: 13rem;
     touch-action: manipulation;
   }
   .videoContent {
@@ -83,6 +84,7 @@
   @media (max-width: 768px) {
     .vidContainer {
       margin: 3.5rem auto;
+      margin-bottom: 6rem;
     }
     .videoInfo {
       font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -147,6 +149,26 @@
 
       <!-- you can also add some other  -->
     </div>
+  </div>
+  <!--reccommendations for another videos-->
+  <div class="video-container">
+    <% for (video of data) { %>
+    <div class="video-card">
+      <a href="/video/<%= video._id %>/show">
+        <div class="thumbnail">
+          <img
+            src="<%= video.video.thumbnailUrl %>"
+            alt="<%= video.video.filename %>"
+            loading="lazy"
+          />
+        </div>
+        <div class="video-details">
+          <h3 class="video-title"><%= video.title %></h3>
+          <p class="video-description"><%= video.description %></p>
+        </div>
+      </a>
+    </div>
+    <% } %>
   </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
