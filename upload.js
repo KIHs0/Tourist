@@ -109,10 +109,9 @@ async function bulkUploadAdmin() {
       .filter((file) => !file.toLowerCase().includes("copy"))
       .filter((file) => !file.toLowerCase().includes("compressed"))
       .filter((file) => !/\(\d+\)\.mp4$/.test(file));
-    console.log('the file length new',files.length);
+    console.log("the file length new", files.length);
     allfiles.forEach((file) => {
-
-      // deleting copied files 
+      // deleting copied files
       if (!files.includes(file)) {
         const filepath = path.join(uploads, file);
         fs.unlinkSync(filepath, (err) => {
@@ -149,9 +148,7 @@ async function bulkUploadAdmin() {
         newvid.video.thumbnailUrl = `https://tourist-h76q.onrender.com/thumbnail/${newname}_compressedthumbnail.jpg`;
         newvid.video.filename = newname;
         newvid.video.tags = genTags();
-        await newvid.save().then((thenres) => {
-          console.log(thenres);
-        });
+        await newvid.save();
         console.log(`Saved to DB: ${newname}`);
         fs.unlinkSync(inputPath, (err) => {
           if (err) {
