@@ -102,28 +102,29 @@ async function bulkUploadAdmin() {
     await mongoose.connect(process.env.MONGO_URL);
     console.log("Connected to MongoDB");
     const allfiles = fs.readdirSync(uploads);
+    console.log("the total files are", allfiles.length);
     const files = fs
       .readdirSync(uploads)
       .filter((file) => file.endsWith(".mp4"))
       .filter((file) => !file.toLowerCase().includes("copy"))
       .filter((file) => !file.toLowerCase().includes("compressed"))
       .filter((file) => !/\(\d+\)\.mp4$/.test(file));
-    console.log(files.length);
+    console.log('the file length new',files.length);
     allfiles.forEach((file) => {
+
+      // deleting copied files 
       if (!files.includes(file)) {
         const filepath = path.join(uploads, file);
         fs.unlinkSync(filepath, (err) => {
           if (err) {
-            console.log(`cant dlt ${filepath}`, err);
+            console.log(`cant dlt ❌ ${filepath}`, err);
           } else {
-            console.log("dlted");
+            console.log(`dlted ✅✅✅ ${filepath}`, err);
           }
         });
       }
     });
-    let count = 1;
     for (const file of files) {
-      console.log(count++);
       const inputPath = path.join(uploads, file);
       const originalname = path.parse(file).name.split(" ");
       let newname = originalname?.[0] ?? "" + originalname?.[1] ?? "";

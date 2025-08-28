@@ -8,30 +8,24 @@
   <h2 class="resultiszero">No videos found.</h2>
 
 <% } else { %>
-    <div class="container">
-  <% results.forEach(data => { %>
-
-    <div class="card">
-      <a href="/video/<%=data._id%>/show">
+    <div class="video-container">
+  <% for (video of results) { %>
+    <div class="video-card">
+      <a href="/video/<%= video._id %>/show">
         <div class="thumbnail">
           <img
-            src="<%= data.video.thumbnailUrl %>"
-            alt="<%= data.video.filename %>"
+            src="<%= video.video.thumbnailUrl %>"
+            alt="<%= video.video.filename %>"
+            loading="lazy"
           />
         </div>
-        <div class="video-player">
-          <video controls>
-            <source src="<%= data.video.url %>" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
-        <div class="card-info">
-          <p><%=data.title%></p>
-          <p><%= data.description %></p>
+        <div class="video-details">
+          <h3 class="video-title"><%= video.title %></h3>
+          <p class="video-description"><%= video.description %></p>
         </div>
       </a>
     </div>
-    <% }) %>
+    <% } %>
     <%}%>
 </div>
 </div>
