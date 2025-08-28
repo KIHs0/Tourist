@@ -93,16 +93,16 @@ const store = MongoStore.create({
 app.use(
   session({
     store,
-    secret: "sadfasdfasdfasd",
+    secret: process.env.PASS,
     resave: false,
     saveUninitialized: true,
     cookie: {
-      expires: 7 * 24 * 60 * 60 * 1000,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     },
   })
 );
+
 app.use(sessionTracker);
 app.use(passport.initialize());
 app.use(passport.session());
@@ -168,17 +168,17 @@ app.get("/", async (req, res) => {
 app.get("/admin", async (req, res) => {
   try {
     const token = req.query.token;
-    if (token !== "oshikloveswiku") {
+    if (token !== process.env.TOKEN) {
       res.redirect("/");
       return;
     }
-
+    const thirthymins = new Date(Date.now() - 30 * 60 * 1000);
     const totalSessions = await Session.countDocuments();
     const activeSessions = await Session.countDocuments({
-      lastActive: { $gte: new Date(Date.now() - 5 * 60 * 1000) }, // active in last 5 mins
+      lastActive: { $gte: thirthymins },
     });
 
-    const allSessions = await Session.find().sort({ lastActive: -1 }).limit(50); // recent 50
+    const allSessions = await Session.find().sort({ lastActive: -1 }); // recent 50
     res.render("admin", {
       totalSessions,
       activeSessions,

@@ -11,7 +11,7 @@ const sessionSchema = new mongoose.Schema({
 });
 
 const Session = mongoose.model("Session", sessionSchema, "customsessions");
-
+sessionSchema.index({ lastActive: 1 }, { expireAfterSeconds: 86400 });
 const sessionTracker = async (req, res, next) => {
   try {
     const sessionId = req.ip + "_" + req.get("User-Agent"); // crude but works
