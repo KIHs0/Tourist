@@ -1,4 +1,32 @@
 <%if( successMsg.length>0) {%>
+<div
+  id="top-alert"
+  class="custom-alert alert alert-warning alert-dismissible show text-center"
+  role="alert"
+>
+  <strong><%= successMsg %></strong>
+  <button
+    type="button"
+    class="btn-close"
+    aria-label="Close"
+    onclick="dismissAlert()"
+  ></button>
+</div>
+<%}%> <%if( errorMsg.length) {%>
+<div
+  id="top-alert"
+  class="custom-alert alert alert-warning alert-dismissible show text-center"
+  role="alert"
+>
+  <strong><%= errorMsg %></strong>
+  <button
+    type="button"
+    class="btn-close"
+    aria-label="Close"
+    onclick="dismissAlert()"
+  ></button>
+</div>
+<%}%>
 <style>
   .custom-alert {
     font-family: monospace;
@@ -28,38 +56,6 @@
     }
   }
 </style>
-
-<div
-  id="top-alert"
-  class="custom-alert alert alert-warning alert-dismissible show text-center"
-  role="alert"
->
-  <strong><%= successMsg %></strong>
-  <button
-    type="button"
-    class="btn-close"
-    aria-label="Close"
-    onclick="dismissAlert()"
-  ></button>
-</div>
-
-<%}%> <%if( errorMsg.length) {%>
-
-<div
-  id="top-alert"
-  class="custom-alert alert alert-warning alert-dismissible show text-center"
-  role="alert"
->
-  <strong><%= errorMsg %></strong>
-  <button
-    type="button"
-    class="btn-close"
-    aria-label="Close"
-    onclick="dismissAlert()"
-  ></button>
-</div>
-<%}%>
-
 <script>
   function dismissAlert() {
     const alert = document.getElementById("top-alert");

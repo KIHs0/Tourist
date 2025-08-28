@@ -43,16 +43,23 @@ document.addEventListener("click", () => {
 });
 searchInput.addEventListener("keydown", async (e) => {
   resultsDiv.style.display = "block";
-  console.log("35");
   const query = e.target.value;
   if (!query) {
     return;
   }
-  setTimeout(async () => {
+  if (e.key == " ") {
     const res = await fetch(`/search/live?query=${encodeURIComponent(query)}`);
     const data = await res.json();
     rendervideoLive(data);
-  }, 3000);
+  } else {
+    setTimeout(async () => {
+      const res = await fetch(
+        `/search/live?query=${encodeURIComponent(query)}`
+      );
+      const data = await res.json();
+      rendervideoLive(data);
+    }, 1500);
+  }
 });
 const rendervideoLive = (videos) => {
   if (videos.length == 0) {

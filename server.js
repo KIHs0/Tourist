@@ -146,7 +146,7 @@ app.use(async (req, res, next) => {
 app.get("/", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = 10;
+    const limit = 16;
     const skip = (page - 1) * limit;
     const total = await VideoDatas.countDocuments({});
     const totalPages = Math.ceil(total / limit);
@@ -226,10 +226,12 @@ app.get(
   wrapasync(async (req, res) => {
     const { id } = req.params;
     const vid = await VideoDatas.findById(id);
-    const data = await VideoDatas.find({ _id: { $ne: id } }).sort({
-      createdAt: -1,
-      _id: -1,
-    });
+    const data = await VideoDatas.find({ _id: { $ne: id } })
+      .sort({
+        createdAt: -1,
+        _id: -1,
+      })
+      .limit(12);
 
     res.render("show.ejs", { vid, data });
   })

@@ -242,6 +242,7 @@ a {
     border-radius: 10px;
     padding: 0;
     z-index: 11;
+    width: max-content;
   }
   #resultsfrinput h3 {
     font-size: 0.7rem;
