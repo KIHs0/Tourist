@@ -3,12 +3,13 @@
   .vidContainer {
     /* border: 2px solid white; */
     width: 100vw;
-    min-height: 70vh;
+    min-height: 75vh;
     margin: 0 auto;
     position: relative;
     margin-bottom: 13rem;
     touch-action: manipulation;
   }
+
   .videoContent {
     /* border: 2px solid red; */
     inset: 0;
@@ -37,6 +38,7 @@
     color: rgba(255, 255, 255, 0.712);
     object-fit: contain;
     border-radius: 9px;
+    cursor: pointer;
   }
   .videoInfo .tag {
     text-transform: capitalize;
@@ -130,6 +132,14 @@
         playsinline
       ></video>
       <div class="videoInfo">
+        <span class="views"><i class="fa fa-eye"></i> <%= vid.views %></span>
+        <span class="likes" id="likeBtn" onclick="handleLike()">
+          <i class="fa fa-thumbs-up"></i>
+        </span>
+
+        <span class="dislikes" id="dislikeBtn" onclick="handleDislike()">
+          <i class="fa fa-thumbs-down"></i>
+        </span>
         <span><h3><%=vid.title%></h3></span>
         <span><h3><%=vid.description%></h3></span>
         <div class="tag">
@@ -185,4 +195,36 @@
       video.src = src; // Safari
     }
   })();
+  const videoId = "<%= vid._id %>";
+
+  async function handleLike() {
+    try {
+      const btn = document.querySelector(".fa-thumbs-up");
+      const btn2 = document.querySelector(".fa-thumbs-down");
+      btn.style.color = "blue";
+      btn2.style.color = "gray";
+      setTimeout(async () => {
+        const res = await fetch(`/video/${videoId}/like`, { method: "POST" });
+      }, 5000);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function handleDislike() {
+    try {
+      const btn = document.querySelector(".fa-thumbs-up");
+      const btn2 = document.querySelector(".fa-thumbs-down");
+
+      btn.style.color = "gray";
+      btn2.style.color = "red";
+      setTimeout(async () => {
+        const res = await fetch(`/video/${videoId}/dislike`, {
+          method: "POST",
+        });
+      }, 5000);
+    } catch (err) {
+      console.error(err);
+    }
+  }
 </script>

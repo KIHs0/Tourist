@@ -83,3 +83,11 @@ const rendervideoLive = (videos) => {
     .join("");
   resultsDiv.innerHTML = html;
 };
+function dismissAlert() {
+  const alert = document.getElementById("top-alert");
+  if (alert) {
+    alert.classList.remove("show");
+    alert.classList.add("hide");
+    setTimeout(() => alert.remove(), 200);
+  }
+}

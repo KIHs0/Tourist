@@ -1,7 +1,124 @@
 <% layout("../layout/plate.ejs") %>
+<style>
+  #ageModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(6px); /* background blur */
+    background: rgba(0, 0, 0, 0.7); /* semi-transparent overlay */
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
 
+  #ageModal .modal-content {
+    background: #111;
+    color: #fff;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+  }
 
+  #ageModal button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: #ff4500;
+    border: none;
+    color: #fff;
+    border-radius: 0.3rem;
+    cursor: pointer;
+  }
+
+  #ageModal button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .custom-alert {
+    font-family: monospace;
+    color: black;
+    text-transform: capitalize;
+    position: fixed;
+    top: 4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1055;
+    width: 100%;
+    max-width: 600px;
+    min-height: 70px;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: -4px 0px 13px rgba(0, 0, 0, 0.3);
+  }
+  .btn-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .btn-yes,
+  .btn-no {
+    flex: 1;
+    padding: 0.8rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s ease;
+  }
+
+  .btn-yes {
+    background: #28a745;
+    color: #fff;
+  }
+  .btn-yes:hover {
+    background: #218838;
+  }
+
+  .btn-no {
+    background: #dc3545;
+    color: #fff;
+  }
+  .btn-no:hover {
+    background: #c82333;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @media (max-width: 600px) {
+    .custom-alert {
+      width: 90%;
+      padding: 1rem 3rem;
+    }
+  }
+</style>
 <body>
+  <div id="ageModal">
+    <div class="modal-content">
+      <h2>Are you 18 or older?</h2>
+      <div class="btn-group">
+        <button id="yesBtn" class="btn-yes">Yes</button>
+        <button id="noBtn" class="btn-no">No</button>
+      </div>
+    </div>
+  </div>
+
   <div class="video-container">
     <% for (video of data) { %>
     <div class="video-card">
@@ -14,7 +131,16 @@
           />
         </div>
         <div class="video-details">
-          <h3 class="video-title"><%= video.title %></h3>
+          <span class="views"
+            ><i class="fa fa-eye"></i> <%= video.views %></span
+          >
+          <span class="likes" id="likeBtn">
+            <i class="fa fa-thumbs-up"> <%=video.likes%></i>
+          </span>
+          <span class="dislikes" id="dislikeBtn">
+            <i class="fa fa-thumbs-down"> <%=video.dislikes%></i>
+          </span>
+          <h3 class="video-title">  <%= video.title %></h3>
           <p class="video-description"><%= video.description %></p>
         </div>
       </a>
@@ -34,3 +160,27 @@
     <% } %>
   </div>
 </body>
+
+<script>
+  const ageModal = document.getElementById("ageModal");
+  const ageSubmit = document.getElementById("ageSubmit");
+  const yesBtn = document.getElementById("yesBtn");
+
+  yesBtn.addEventListener("click", () => {
+    localStorage.setItem("is18", "true");
+    ageModal.style.display = "none";
+  });
+
+  noBtn.addEventListener("click", () => {
+    alert("You must be 18 or older to access this site.");
+    window.location.href = "https://www.google.com"; // redirect them away
+  });
+  // Show modal on page load if not verified
+  window.addEventListener("load", () => {
+    if (!localStorage.getItem("is18")) {
+      ageModal.style.display = "flex";
+    } else {
+      ageModal.style.display = "none";
+    }
+  });
+</script>

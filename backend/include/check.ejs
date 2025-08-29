@@ -1,0 +1,93 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Age Verification</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      /* Fullscreen modal */
+      #ageModal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+
+      /* Modal content */
+      .modal-content {
+        background: #111;
+        color: #fff;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+      }
+
+      button {
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+        background: #ff4500;
+        border: none;
+        color: #fff;
+        border-radius: 0.3rem;
+        cursor: pointer;
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ageModal">
+      <div class="modal-content">
+        <h2>Are you 18 or older?</h2>
+        <label> <input type="checkbox" id="ageCheck" /> Yes, I am 18+ </label>
+        <br />
+        <button id="ageSubmit" disabled>Continue</button>
+      </div>
+    </div>
+
+    <script>
+      const ageModal = document.getElementById("ageModal");
+      const ageCheck = document.getElementById("ageCheck");
+      const ageSubmit = document.getElementById("ageSubmit");
+
+      // Enable button only when checkbox is checked
+      ageCheck.addEventListener("change", () => {
+        console.log(ageCheck.checked);
+        ageSubmit.disabled = !ageCheck.checked;
+      });
+
+      // Continue button
+      ageSubmit.addEventListener("click", () => {
+        // Save choice in localStorage
+        localStorage.setItem("is18", "true");
+        // Hide modal
+        ageModal.style.display = "none";
+      });
+
+      // Show modal on page load if not verified
+      window.addEventListener("load", () => {
+        if (!localStorage.getItem("is18")) {
+          ageModal.style.display = "flex";
+        } else {
+          ageModal.style.display = "none";
+        }
+      });
+    </script>
+  </body>
+</html> -->

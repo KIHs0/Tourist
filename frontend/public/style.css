@@ -369,6 +369,11 @@ a {
     gap: 12px;
     padding: 12px;
   }
+  .views,
+  .likes,
+  .dislikes {
+    font-size: 1px;
+  }
   @media (max-width: 390px) {
     .video-container {
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -389,5 +394,28 @@ a {
 
   .video-description {
     font-size: 0.55rem;
+  }
+}
+.views,
+.dislikes,
+.likes {
+  margin-right: 1em;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.views,
+.dislikes,
+.likes i {
+  color: #555;
+}
+@media (max-width: 768px) {
+  .views,
+  .likes,
+  .dislikes {
+    font-size: 13px;
   }
 }

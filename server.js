@@ -226,16 +226,46 @@ app.get(
   wrapasync(async (req, res) => {
     const { id } = req.params;
     const vid = await VideoDatas.findById(id);
+    const limit = 12;
+    const skip = (Math.floor(Math.random() * 4 + 1) - 1) * limit;
     const data = await VideoDatas.find({ _id: { $ne: id } })
       .sort({
         createdAt: -1,
         _id: -1,
       })
+      .skip(skip)
       .limit(12);
-
     res.render("show.ejs", { vid, data });
+    VideoDatas.findByIdAndUpdate(id, { $inc: { views: 1 } }).then();
   })
 );
+app.post(
+  "/video/:id/like",
+  wrapasync(async (req, res) => {
+    const video = await VideoDatas.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { likes: 1 } },
+      { new: true }
+    );
+  })
+);
+// Increment dislikes
+app.post(
+  "/video/:id/dislike",
+  wrapasync(async (req, res) => {
+    const { id } = req.params;
+
+    // Increment dislikes by 1 and return updated document
+    const video = await VideoDatas.findByIdAndUpdate(
+      id,
+      { $inc: { dislikes: 1 } },
+      { new: true } // return updated document
+    );
+
+    if (!video) return res.status(404).json({ error: "Video not found" });
+  })
+);
+
 // categories route and cateogires.ejs
 app.get(
   "/video/categories/:tags",
